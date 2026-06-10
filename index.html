@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>BCM ChatGPT Dashboard 2025–2026 v3</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root {
+  --gpt:#10a37f; --gpt-l:#d1fae5; --gpt-d:#065f46;
+  --blue:#1e40af; --blue-l:#dbeafe;
+  --purple:#7c3aed; --purple-l:#ede9fe;
+  --orange:#ea580c; --orange-l:#ffedd5;
+  --red:#dc2626; --red-l:#fee2e2;
+  --pink:#e11d48; --pink-l:#ffe4e6;
+  --yellow:#d97706; --yellow-l:#fef3c7;
+  --gem:#4285f4; --gem-l:#dbeafe;
+  --cla:#d97706; --cla-l:#fef3c7;
+  --g50:#f9fafb; --g100:#f3f4f6; --g200:#e5e7eb; --g300:#d1d5db;
+  --g500:#6b7280; --g600:#4b5563; --g700:#374151; --g800:#1f2937; --g900:#111827;
+  --white:#fff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--g100);color:var(--g800);font-size:14px}
+.topnav{background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 60%,#1e40af 100%);
+  padding:0 32px;display:flex;align-items:center;gap:4px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.topnav-brand{color:white;font-weight:800;font-size:15px;margin-right:20px;padding:16px 0;white-space:nowrap}
+.topnav-brand span{color:#60a5fa}
+.nav-btn{padding:12px 18px;border:none;background:transparent;color:rgba(255,255,255,.65);cursor:pointer;font-size:13px;font-weight:600;border-bottom:3px solid transparent;white-space:nowrap;transition:all .15s}
+.nav-btn:hover{color:white;background:rgba(255,255,255,.07)}
+.nav-btn.active{color:white;border-bottom-color:#60a5fa}
+.nav-warning{margin-left:auto;background:rgba(220,38,38,.2);border:1px solid rgba(220,38,38,.5);color:#fca5a5;font-size:11px;padding:5px 12px;border-radius:16px;white-space:nowrap}
+.hero{background:linear-gradient(135deg,#065f46 0%,#10a37f 70%,#34d399 100%);color:white;padding:24px 36px 20px}
+.hero h1{font-size:20px;font-weight:800;margin-bottom:4px}
+.hero p{font-size:12px;opacity:.8}
+.hero-meta{display:flex;flex-wrap:wrap;gap:12px;margin-top:12px}
+.hero-chip{background:rgba(255,255,255,.18);border-radius:20px;padding:3px 12px;font-size:11px;font-weight:600}
+.hero-chip.warn{background:rgba(239,68,68,.3);border:1px solid rgba(239,68,68,.6)}
+.section{display:none;max-width:1400px;margin:0 auto;padding:24px 24px 40px}
+.section.active{display:block}
+.sec-title{font-size:14px;font-weight:800;color:var(--g700);margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid var(--gpt);display:flex;align-items:center;gap:7px}
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.kpi{background:var(--white);border-radius:10px;padding:16px 18px;border-left:4px solid var(--gpt);box-shadow:0 1px 3px rgba(0,0,0,.07)}
+.kpi.b{border-left-color:var(--blue)} .kpi.o{border-left-color:var(--orange)} .kpi.p{border-left-color:var(--purple)} .kpi.r{border-left-color:var(--red)} .kpi.y{border-left-color:var(--yellow)} .kpi.gem{border-left-color:var(--gem)} .kpi.cla{border-left-color:var(--cla)}
+.kpi-l{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--g500);margin-bottom:5px}
+.kpi-v{font-size:24px;font-weight:900;color:var(--g900);line-height:1}
+.kpi-s{font-size:11px;color:var(--g500);margin-top:5px}
+.card{background:var(--white);border-radius:10px;padding:18px 20px;box-shadow:0 1px 3px rgba(0,0,0,.07);margin-bottom:20px}
+.card h3{font-size:12px;font-weight:700;color:var(--g700);margin-bottom:12px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:20px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-bottom:20px}
+.chart-h{position:relative;height:200px}
+.chart-ht{position:relative;height:280px}
+.chart-xl{position:relative;height:320px}
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+thead tr{background:#f0fdf4}
+thead th{padding:9px 12px;text-align:left;font-weight:700;color:var(--gpt-d);border-bottom:2px solid var(--gpt);white-space:nowrap}
+tbody td{padding:8px 12px;border-bottom:1px solid var(--g200);vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:var(--g50)}
+.num{text-align:right;font-variant-numeric:tabular-nums;font-family:monospace}
+.badge{display:inline-block;padding:2px 9px;border-radius:10px;font-size:10.5px;font-weight:700;white-space:nowrap}
+.bg{background:var(--gpt-l);color:var(--gpt-d)}
+.bb{background:var(--blue-l);color:var(--blue)}
+.bo{background:var(--orange-l);color:var(--orange)}
+.by{background:var(--yellow-l);color:var(--yellow)}
+.br{background:var(--red-l);color:var(--red)}
+.bk{background:var(--g200);color:var(--g600)}
+.bpk{background:var(--pink-l);color:var(--pink)}
+.bgem{background:var(--gem-l);color:var(--gem)}
+.bcla{background:var(--cla-l);color:var(--cla)}
+.tab-bar{display:flex;gap:3px;margin-bottom:14px;flex-wrap:wrap}
+.tab{padding:5px 14px;border-radius:7px;border:1.5px solid var(--g300);background:var(--white);cursor:pointer;font-size:11px;font-weight:700;color:var(--g600);transition:all .15s}
+.tab.active{background:var(--gpt);border-color:var(--gpt);color:white}
+.tab-pane{display:none}.tab-pane.active{display:block}
+.bar-bg{display:inline-block;width:80px;height:7px;background:var(--g200);border-radius:4px;vertical-align:middle;margin-right:5px}
+.bar-fg{height:7px;border-radius:4px;background:var(--gpt);display:block}
+.alert{border-radius:8px;padding:12px 16px;margin-bottom:16px;display:flex;gap:10px;align-items:flex-start}
+.alert-warn{background:#fef3c7;border-left:4px solid var(--yellow)}
+.alert-info{background:var(--blue-l);border-left:4px solid var(--blue)}
+.alert-red{background:var(--red-l);border-left:4px solid var(--red)}
+.alert-green{background:var(--gpt-l);border-left:4px solid var(--gpt)}
+/* FILTER BAR */
+.filter-bar{display:flex;align-items:center;gap:8px;margin-bottom:18px;padding:12px 16px;background:var(--white);border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.07)}
+.filter-label{font-size:11px;font-weight:700;color:var(--g600);margin-right:4px}
+.filter-btn{padding:6px 16px;border-radius:20px;border:1.5px solid var(--g300);background:var(--white);cursor:pointer;font-size:12px;font-weight:700;color:var(--g600);transition:all .2s}
+.filter-btn:hover{border-color:var(--gpt);color:var(--gpt)}
+.filter-btn.active{background:var(--gpt);border-color:var(--gpt);color:white}
+.filter-btn.exec-btn.active{background:var(--gpt);border-color:var(--gpt)}
+.filter-btn.div-btn.active{background:var(--blue);border-color:var(--blue)}
+/* CHART PANELS */
+.chart-panel{display:none}
+.chart-panel.visible{display:block}
+/* SURVEY BAR */
+.survey-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.survey-bar-label{width:200px;font-size:12px;color:var(--g700);text-align:right;flex-shrink:0}
+.survey-bar-track{flex:1;height:20px;background:var(--g100);border-radius:4px;overflow:hidden}
+.survey-bar-fill{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:6px;font-size:10.5px;font-weight:700;color:white;transition:width .5s ease;white-space:nowrap}
+.survey-bar-pct{width:48px;font-size:12px;font-weight:700;color:var(--g700);text-align:right}
+/* EFF SCORE */
+.eff-bar{display:inline-flex;align-items:center;gap:5px;vertical-align:middle}
+.eff-track{width:60px;height:6px;background:var(--g200);border-radius:3px;overflow:hidden;display:inline-block}
+.eff-fill{height:100%;border-radius:3px}
+.eff-t1{background:#16a34a} .eff-t2{background:#2563eb} .eff-t3{background:#d97706} .eff-t4{background:#dc2626}
+/* VERDICT */
+.verdict{background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1.5px solid var(--gpt);border-radius:12px;padding:20px 24px;margin-bottom:20px}
+.verdict h3{color:var(--gpt-d);font-size:14px;margin-bottom:12px}
+.verdict-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.vi{background:white;border-radius:8px;padding:14px;border:1px solid var(--gpt-l)}
+.vi .vi-icon{font-size:20px;margin-bottom:5px}
+.vi .vi-title{font-size:11.5px;font-weight:800;color:var(--gpt-d);margin-bottom:4px}
+.vi .vi-body{font-size:11.5px;color:var(--g600);line-height:1.6}
+/* MIX CALCULATOR */
+.mix-calc{background:var(--white);border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.08);margin-bottom:20px;overflow:hidden}
+.mix-calc-header{background:linear-gradient(135deg,#1e3a5f,#1e40af);color:white;padding:16px 20px;display:flex;align-items:center;justify-content:space-between}
+.mix-calc-header h3{font-size:14px;font-weight:800}
+.mix-calc-header .fx-field{display:flex;align-items:center;gap:8px}
+.mix-calc-header label{font-size:11px;color:rgba(255,255,255,.8)}
+.mix-calc-header input{border:1.5px solid rgba(255,255,255,.3);border-radius:6px;padding:5px 9px;font-size:13px;font-family:monospace;color:white;background:rgba(255,255,255,.15);width:90px;text-align:center}
+.mix-section-hdr{padding:10px 16px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;color:white}
+.mix-section-hdr.paid{background:#065f46}
+.mix-section-hdr.free{background:#1e40af}
+.mix-section-hdr.api{background:#9a3412}
+.mix-section-hdr.thai{background:#be185d}
+.mix-row{display:grid;grid-template-columns:260px 90px 120px 130px 140px;align-items:center;padding:11px 16px;border-bottom:1px solid var(--g200);gap:12px}
+.mix-row:hover{background:var(--g50)}
+.mix-row-last{border-bottom:2px solid var(--g200)}
+.mix-tool-name{font-size:12.5px;font-weight:700;color:var(--g800);display:flex;align-items:center;gap:7px}
+.mix-tool-sub{font-size:10.5px;color:var(--g500);font-weight:400;display:block;margin-top:1px}
+.mix-seats-input{border:1.5px solid var(--g300);border-radius:6px;padding:6px 10px;font-size:13px;font-family:monospace;color:var(--g800);background:var(--g50);width:80px;text-align:center}
+.mix-seats-input:focus{border-color:var(--gpt);outline:none}
+.mix-cost-mo{font-size:12px;color:var(--g600);font-family:monospace;text-align:right}
+.mix-cost-yr{font-size:14px;font-weight:800;color:var(--g800);font-family:monospace;text-align:right}
+.mix-note{font-size:10.5px;color:var(--g500)}
+.mix-free-note{font-size:11px;color:var(--blue);background:var(--blue-l);border-radius:5px;padding:2px 8px}
+.mix-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:16px 20px;background:var(--g50);border-top:2px solid var(--g200)}
+.mix-sum-box{background:var(--white);border-radius:8px;padding:12px 14px;border:1.5px solid var(--g200);text-align:center}
+.mix-sum-box.highlight{background:var(--gpt-l);border-color:var(--gpt)}
+.mix-sum-label{font-size:10px;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.mix-sum-val{font-size:20px;font-weight:900;color:var(--g900);font-family:monospace}
+.mix-sum-sub{font-size:10px;color:var(--g500);margin-top:3px}
+.mix-calc-btn{display:block;width:calc(100% - 32px);margin:0 16px 16px;padding:10px;background:var(--gpt);color:white;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700}
+.mix-calc-btn:hover{background:var(--gpt-d)}
+/* SCENARIO TABLE */
+.plan-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px}
+.plan-card{background:var(--white);border-radius:12px;padding:18px;box-shadow:0 1px 4px rgba(0,0,0,.08);border-top:4px solid var(--g300)}
+.plan-card.gpt{border-top-color:var(--gpt)} .plan-card.gem{border-top-color:var(--gem)} .plan-card.cla{border-top-color:var(--cla)} .plan-card.api{border-top-color:var(--orange)} .plan-card.thai{border-top-color:var(--pink)}
+.plan-name{font-size:14px;font-weight:800;margin-bottom:2px}
+.plan-price{font-size:20px;font-weight:900;margin:6px 0 3px;line-height:1}
+.plan-sub{font-size:11px;color:var(--g500);margin-bottom:10px}
+.plan-row{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--g200);font-size:12px}
+.plan-row:last-child{border:none;font-weight:700}
+.feat{display:flex;align-items:flex-start;gap:5px;margin-bottom:4px;font-size:11px;color:var(--g600);line-height:1.5}
+.feat-ok{color:var(--gpt)} .feat-no{color:var(--red)}
+@media(max-width:900px){
+  .kpi-row,.grid2,.grid3,.plan-grid,.mix-summary{grid-template-columns:1fr 1fr}
+  .mix-row{grid-template-columns:1fr 80px}
+}
+</style>
+</head>
+<body>
+
+<div class="topnav">
+  <div class="topnav-brand">🏥 BCM <span>AI Dashboard</span> 2025–2026</div>
+  <button class="nav-btn active" onclick="switchSection(0)">📊 ส่วนที่ 1 · การใช้งาน ChatGPT</button>
+  <button class="nav-btn" onclick="switchSection(1)">🔍 ส่วนที่ 2 · ผลสำรวจ & Efficiency</button>
+  <button class="nav-btn" onclick="switchSection(2)">💡 ส่วนที่ 3 · เปรียบเทียบ Subscription</button>
+  <div class="nav-warning">⚠️ Division workspace หมดอายุ 21 ส.ค. 2569</div>
+</div>
+
+<div class="hero">
+  <h1>ChatGPT Workspace Analytics · BCM Executive &amp; Division</h1>
+  <p>โรงพยาบาลกรุงเทพเชียงใหม่ · ข้อมูล MAY 2025 – MAY 2026 · Data updated Jun 10, 2026</p>
+  <div class="hero-meta">
+    <span class="hero-chip">📅 ช่วงวิเคราะห์: 12 เดือน</span>
+    <span class="hero-chip">👤 Executive: 47 seats</span>
+    <span class="hero-chip">🏢 Division: 20 accounts</span>
+    <span class="hero-chip">💳 Plan: ChatGPT Team</span>
+    <span class="hero-chip warn">🔴 Division Workspace: Deactivate 21 ส.ค. 2569</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SECTION 1 — ChatGPT USAGE
+══════════════════════════════════════════ -->
+<div class="section active" id="sec0">
+
+  <div class="sec-title" style="margin-top:8px">📈 ภาพรวมการใช้งาน (Executive + Division รวมกัน)</div>
+  <div class="kpi-row">
+    <div class="kpi"><div class="kpi-l">รวม 1 เดือน (MAY 2026)</div><div class="kpi-v">6,880</div><div class="kpi-s">Exec 3,822 + Div 3,058 · 44 active</div></div>
+    <div class="kpi b"><div class="kpi-l">รวม 6 เดือน (DEC–MAY)</div><div class="kpi-v">36,792</div><div class="kpi-s">Exec 22,316 + Div 14,476 · 52 active</div></div>
+    <div class="kpi o"><div class="kpi-l">รวม 12 เดือน (MAY–MAY)</div><div class="kpi-v">76,634</div><div class="kpi-s">Exec 50,291 + Div 26,343 · 60 active</div></div>
+    <div class="kpi p"><div class="kpi-l">Avg Msg/Account/เดือน (12M)</div><div class="kpi-v">95</div><div class="kpi-s">76,634 ÷ 67 seats ÷ 12 months</div></div>
+  </div>
+
+  <!-- WORKSPACE FILTER -->
+  <div class="filter-bar">
+    <span class="filter-label">🔎 แสดงกราฟสำหรับ Workspace:</span>
+    <button class="filter-btn active" onclick="filterWS('all',this)">📊 ทั้งหมด (Combined)</button>
+    <button class="filter-btn exec-btn" onclick="filterWS('exec',this)">🟢 Executive (47 seats)</button>
+    <button class="filter-btn div-btn" onclick="filterWS('div',this)">🔵 Division (20 accounts)</button>
+    <span style="margin-left:auto;font-size:11px;color:var(--g500)">กดปุ่มเพื่อแสดงกราฟแยก หรือรวมกัน</span>
+  </div>
+
+  <!-- ALL CHARTS PANEL -->
+  <div id="panel-all" class="chart-panel visible">
+    <div class="grid2">
+      <div class="card">
+        <h3>📊 Messages รวม: Executive vs Division (Stacked)</h3>
+        <div class="chart-h"><canvas id="c_combined"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>👥 Active Accounts – Executive vs Division</h3>
+        <div class="chart-h"><canvas id="c_util_all"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXECUTIVE CHARTS PANEL -->
+  <div id="panel-exec" class="chart-panel">
+    <div class="sec-title" style="color:var(--gpt-d)">🟢 Executive Workspace Charts (47 Seats)</div>
+    <div class="grid3">
+      <div class="card">
+        <h3>📊 Executive: Messages by Period</h3>
+        <div class="chart-h"><canvas id="c_exec_msgs"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>👥 Executive: Active Accounts</h3>
+        <div class="chart-h"><canvas id="c_exec_active"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>🏆 Top 6 Users (12M)</h3>
+        <div class="chart-h"><canvas id="c_exec_top"></canvas></div>
+      </div>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <h3>📈 Executive: Avg Messages/Month Trend (ประมาณการ)</h3>
+        <div class="chart-ht"><canvas id="c_exec_trend"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>📊 Executive Usage Intensity Distribution (12M)</h3>
+        <div class="chart-ht"><canvas id="c_exec_dist"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DIVISION CHARTS PANEL -->
+  <div id="panel-div" class="chart-panel">
+    <div class="sec-title" style="color:var(--blue)">🔵 Division Workspace Charts (20 Dept Accounts)</div>
+    <div class="grid3">
+      <div class="card">
+        <h3>📊 Division: Messages by Period</h3>
+        <div class="chart-h"><canvas id="c_div_msgs"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>👥 Division: Active Departments</h3>
+        <div class="chart-h"><canvas id="c_div_active"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>🏆 Top 8 Divisions (12M)</h3>
+        <div class="chart-h"><canvas id="c_div_top"></canvas></div>
+      </div>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <h3>📈 Division: Avg Messages/Month Trend</h3>
+        <div class="chart-ht"><canvas id="c_div_trend"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>📊 Division Usage Intensity (1M vs 12M/12)</h3>
+        <div class="chart-ht"><canvas id="c_div_compare"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXECUTIVE TABLE -->
+  <div class="sec-title">🧑‍💼 Executive Workspace (47 Seats)</div>
+  <div class="kpi-row">
+    <div class="kpi"><div class="kpi-l">1M Active</div><div class="kpi-v">27/47</div><div class="kpi-s">57.4% utilization</div></div>
+    <div class="kpi b"><div class="kpi-l">6M Active</div><div class="kpi-v">32/47</div><div class="kpi-s">68.1% utilization</div></div>
+    <div class="kpi o"><div class="kpi-l">12M Active</div><div class="kpi-v">40/47</div><div class="kpi-s">85.1% utilization</div></div>
+    <div class="kpi p"><div class="kpi-l">12M Total Messages</div><div class="kpi-v">50,291</div><div class="kpi-s">~4,191/month avg</div></div>
+  </div>
+  <div class="card">
+    <div class="tab-bar">
+      <button class="tab active" onclick="showTab('exec','1m',this)">1M MAY 2026</button>
+      <button class="tab" onclick="showTab('exec','6m',this)">6M DEC–MAY</button>
+      <button class="tab" onclick="showTab('exec','12m',this)">12M MAY–MAY</button>
+    </div>
+    <div id="exec-1m" class="tab-pane active">
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>#</th><th>ชื่อ</th><th class="num">Messages</th><th>สัดส่วน</th><th>ระดับ</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Busaban Dettrairat</td><td class="num">846</td><td><span class="bar-bg"><span class="bar-fg" style="width:100%"></span></span>22.1%</td><td><span class="badge bg">High</span></td></tr>
+          <tr><td>2</td><td>TAWAT LAOWONGKOT</td><td class="num">685</td><td><span class="bar-bg"><span class="bar-fg" style="width:81%"></span></span>17.9%</td><td><span class="badge bg">High</span></td></tr>
+          <tr><td>3</td><td>Poya Chulaluck</td><td class="num">443</td><td><span class="bar-bg"><span class="bar-fg" style="width:52%"></span></span>11.6%</td><td><span class="badge bg">High</span></td></tr>
+          <tr><td>4</td><td>Pipat Kwanpraekaew</td><td class="num">314</td><td><span class="bar-bg"><span class="bar-fg" style="width:37%"></span></span>8.2%</td><td><span class="badge bg">High</span></td></tr>
+          <tr><td>5</td><td>Atikun Limsukon</td><td class="num">201</td><td><span class="bar-bg"><span class="bar-fg" style="width:24%"></span></span>5.3%</td><td><span class="badge bb">Medium</span></td></tr>
+          <tr><td>6</td><td>Narong Laohaviraphap</td><td class="num">187</td><td><span class="bar-bg"><span class="bar-fg" style="width:22%"></span></span>4.9%</td><td><span class="badge bb">Medium</span></td></tr>
+          <tr><td>7</td><td>Apicha Chaimongkolkarn</td><td class="num">163</td><td><span class="bar-bg"><span class="bar-fg" style="width:19%"></span></span>4.3%</td><td><span class="badge bb">Medium</span></td></tr>
+          <tr><td>8</td><td>plubplueng kotaratititham</td><td class="num">140</td><td><span class="bar-bg"><span class="bar-fg" style="width:17%"></span></span>3.7%</td><td><span class="badge bb">Medium</span></td></tr>
+          <tr><td>9</td><td>Wilai Aiumpatoomsak</td><td class="num">101</td><td><span class="bar-bg"><span class="bar-fg" style="width:12%"></span></span>2.6%</td><td><span class="badge bb">Medium</span></td></tr>
+          <tr><td>10</td><td>wanwarang</td><td class="num">81</td><td><span class="bar-bg"><span class="bar-fg" style="width:10%"></span></span>2.1%</td><td><span class="badge bo">Low</span></td></tr>
+          <tr><td>11</td><td>Promphan</td><td class="num">75</td><td><span class="bar-bg"><span class="bar-fg" style="width:9%"></span></span>2.0%</td><td><span class="badge bo">Low</span></td></tr>
+          <tr><td>12</td><td>Sutthikorn Tantbirojn</td><td class="num">72</td><td>–</td><td><span class="badge bo">Low</span></td></tr>
+          <tr><td>13</td><td>Worapan Nunthasettha</td><td class="num">68</td><td>–</td><td><span class="badge bo">Low</span></td></tr>
+          <tr><td>14</td><td>Chiranee Chernun</td><td class="num">65</td><td>–</td><td><span class="badge bo">Low</span></td></tr>
+          <tr><td>15</td><td>jintana nanthahathai</td><td class="num">57</td><td>–</td><td><span class="badge bo">Low</span></td></tr>
+          <tr><td>16</td><td>Theerachai (นพ.ธีรชัย อภิวรรธกกุล) <small style="color:var(--g500)">แพทย์บริหาร</small></td><td class="num">47</td><td>–</td><td><span class="badge bk">Very Low</span></td></tr>
+          <tr><td>18</td><td>weerachai nawarawong (นพ.วีระชัย นาวารวงศ์) <small style="color:var(--g500)">ผู้อำนวยการฝ่ายแพทย์</small></td><td class="num">45</td><td>–</td><td><span class="badge bk">Very Low</span></td></tr>
+          <tr><td>19</td><td>โสภาพรรณ สุวรรณ <small style="color:var(--g500)">TQCI Manager</small></td><td class="num">44</td><td>–</td><td><span class="badge bk">Very Low</span></td></tr>
+          <tr><td>20</td><td>arisada pitchayadechakoon (พญ.อริศฎา) <small style="color:var(--g500)">Deputy Director</small></td><td class="num">44</td><td>–</td><td><span class="badge bk">Very Low</span></td></tr>
+          <tr><td>21</td><td>Tammy Jetaime (คุณเต็มสิริ โกไศยกานนท์) <small style="color:var(--g500)">Pharmacy Manager</small></td><td class="num">37</td><td>–</td><td><span class="badge bk">Very Low</span></td></tr>
+          <tr><td>22</td><td>Napeephat Pakdee (คุณณพีร์พัชร ภักดี) <small style="color:var(--g500)">CoE Cancer &amp; Neuro Mgr</small></td><td class="num">18</td><td>–</td><td><span class="badge bk">Very Low</span></td></tr>
+          <tr><td>23</td><td>Dr.Tida V (พญ.ธิดา วัฒนพันธ์พิทักษ์) <small style="color:var(--g500)">แพทย์ช่วยบริหาร</small></td><td class="num">18</td><td>–</td><td><span class="badge bk">Very Low</span></td></tr>
+          <tr><td>24</td><td>Watoo Sutthisast (พญ.วธู สุทธิศาสตร์) <small style="color:var(--g500)">PCU Director รังสีวินิจฉัย</small></td><td class="num">7</td><td>–</td><td><span class="badge bk">Very Low</span></td></tr>
+          <tr><td>25</td><td>Bhumie (ทพ.ภวัคร์ ตั้งทางธรรม) <small style="color:var(--g500)">PCU Director ทันตกรรม</small></td><td class="num">7</td><td>–</td><td><span class="badge bk">Very Low</span></td></tr>
+          <tr><td>26</td><td>Sunanta (คุณสุนันทา นาวินรัตนศิริ) <small style="color:var(--g500)">General Support Manager</small></td><td class="num">4</td><td>–</td><td><span class="badge bk">Very Low</span></td></tr>
+          <tr><td>27</td><td>Walailak Piya (คุณวลัยลักษณ์ ปิยะนาวิน) <small style="color:var(--g500)">Finance &amp; Accounting Mgr</small></td><td class="num">1</td><td>–</td><td><span class="badge bk">Very Low</span></td></tr>
+          <tr style="background:var(--g100)"><td colspan="5" style="padding:5px 12px;font-size:10px;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:.5px">⛔ ไม่มีการใช้งานในเดือนนี้ (20 accounts)</td></tr>
+          <tr style="background:#fff8f8"><td style="color:var(--g400)">–</td><td style="color:var(--g400);font-size:12px">นพ.วุฒินันท์ มนัสสุนทรวุฒิ <small>Asst Hospital Director</small></td><td class="num" style="color:var(--g400)">0</td><td>–</td><td><span class="badge br">ไม่ใช้</span></td></tr>
+          <tr style="background:#fff8f8"><td style="color:var(--g400)">–</td><td style="color:var(--g400);font-size:12px">นพ.ศิริศักดิ์ โรจนะประเสริฐกิจ <small>Asst Hospital Director</small></td><td class="num" style="color:var(--g400)">0</td><td>–</td><td><span class="badge br">ไม่ใช้</span></td></tr>
+          <tr style="background:#fff8f8"><td style="color:var(--g400)">–</td><td style="color:var(--g400);font-size:12px">คุณพัชรียา พ่อค้า <small>IPUs Medicine Manager</small></td><td class="num" style="color:var(--g400)">0</td><td>–</td><td><span class="badge br">ไม่ใช้</span></td></tr>
+          <tr style="background:#fff8f8"><td style="color:var(--g400)">–</td><td style="color:var(--g400);font-size:12px">คุณทิพวรรณ์ ตั้งวัฒนวรกุล <small>Marketing Manager</small></td><td class="num" style="color:var(--g400)">0</td><td>–</td><td><span class="badge br">ไม่ใช้</span></td></tr>
+          <tr style="background:#fff8f8"><td style="color:var(--g400)">–</td><td style="color:var(--g400);font-size:12px">คุณกณิศนันท์ โชคธนยศเสถียร <small>Asst GSD Manager</small></td><td class="num" style="color:var(--g400)">0</td><td>–</td><td><span class="badge br">ไม่ใช้</span></td></tr>
+          <tr style="background:#fff8f8"><td style="color:var(--g400)">–</td><td style="color:var(--g400);font-size:12px">นพ.อำนาจ ชวาลวุฒิ <small>ประธานองค์กรแพทย์</small></td><td class="num" style="color:var(--g400)">0</td><td>–</td><td><span class="badge br">ไม่ใช้</span></td></tr>
+          <tr style="background:#fff8f8"><td style="color:var(--g400)">–</td><td style="color:var(--g400);font-size:12px">นพ.โอภาส พิณไชย <small>แพทย์บริหาร</small></td><td class="num" style="color:var(--g400)">0</td><td>–</td><td><span class="badge br">ไม่ใช้</span></td></tr>
+          <tr style="background:#fff8f8"><td style="color:var(--g400)">–</td><td style="color:var(--g400);font-size:12px">นพ.คมกริช ฐานิสโร <small>แพทย์บริหาร</small></td><td class="num" style="color:var(--g400)">0</td><td>–</td><td><span class="badge br">ไม่ใช้</span></td></tr>
+          <tr style="background:#fff8f8"><td style="color:var(--g400)">–</td><td style="color:var(--g400);font-size:12px">นพ.ศรัณย์ ควรประเสริฐ <small>แพทย์บริหาร</small></td><td class="num" style="color:var(--g400)">0</td><td>–</td><td><span class="badge br">ไม่ใช้</span></td></tr>
+          <tr style="background:#fff8f8"><td style="color:var(--g400)">–</td><td style="color:var(--g400);font-size:12px">นพ.ดนัย อินทรกำแหง <small>แพทย์ช่วยบริหาร</small></td><td class="num" style="color:var(--g400)">0</td><td>–</td><td><span class="badge br">ไม่ใช้</span></td></tr>
+          <tr style="background:#fff8f8"><td style="color:var(--g400)">–</td><td style="color:var(--g400);font-size:12px">พญ.วิกานดา ตันติโสภารักษ์ <small>แพทย์ช่วยบริหาร</small></td><td class="num" style="color:var(--g400)">0</td><td>–</td><td><span class="badge br">ไม่ใช้</span></td></tr>
+          <tr style="background:#fff8f8"><td style="color:var(--g400)">–</td><td style="color:var(--g400);font-size:12px">นพ.วิทวัส อริยวุฒยากร <small>Senior PCU Director</small></td><td class="num" style="color:var(--g400)">0</td><td>–</td><td><span class="badge br">ไม่ใช้</span></td></tr>
+          <tr style="background:#fff8f8"><td style="color:var(--g400)">–</td><td style="color:var(--g400);font-size:12px">นพ.โอฬาร อาภรณ์ชยานนท์ <small>Senior PCU Director</small></td><td class="num" style="color:var(--g400)">0</td><td>–</td><td><span class="badge br">ไม่ใช้</span></td></tr>
+          <tr style="background:#fff8f8"><td style="color:var(--g400)">–</td><td style="color:var(--g400);font-size:12px">พญ.จรรยารัตน์ ทองพรม <small>PCU Director ศัลยกรรม</small></td><td class="num" style="color:var(--g400)">0</td><td>–</td><td><span class="badge br">ไม่ใช้</span></td></tr>
+          <tr style="background:#fff8f8"><td style="color:var(--g400)">–</td><td style="color:var(--g400);font-size:12px">พญ.นภัทร์ธมณฑ์ บุญมา <small>PCU Director สุขภาพสตรี</small></td><td class="num" style="color:var(--g400)">0</td><td>–</td><td><span class="badge br">ไม่ใช้</span></td></tr>
+          <tr style="background:#fff8f8"><td style="color:var(--g400)">–</td><td style="color:var(--g400);font-size:12px">พญ.ศรีสกุล ทิพย์กมล <small>PCU Director อุบัติเหตุ</small></td><td class="num" style="color:var(--g400)">0</td><td>–</td><td><span class="badge br">ไม่ใช้</span></td></tr>
+          <tr style="background:#fff8f8"><td style="color:var(--g400)">–</td><td style="color:var(--g400);font-size:12px">พญ.อุรารัตน์ วสุนธราพร <small>PCU Director ออร์โธ</small></td><td class="num" style="color:var(--g400)">0</td><td>–</td><td><span class="badge br">ไม่ใช้</span></td></tr>
+          <tr style="background:#fff8f8"><td style="color:var(--g400)">–</td><td style="color:var(--g400);font-size:12px">นพ.วัชรวิชญ์ ธนาพวงวรินทร์ <small>PCU Director ส่งเสริมสุขภาพ</small></td><td class="num" style="color:var(--g400)">0</td><td>–</td><td><span class="badge br">ไม่ใช้</span></td></tr>
+          <tr style="background:#fff8f8"><td style="color:var(--g400)">–</td><td style="color:var(--g400);font-size:12px">นพ.ภูมิศักดิ์ สุวรรณศร <small>PCU Director วิสัญญี</small></td><td class="num" style="color:var(--g400)">0</td><td>–</td><td><span class="badge br">ไม่ใช้</span></td></tr>
+          <tr style="background:#f0fdf4;font-weight:700"><td colspan="2">รวม</td><td class="num">3,822</td><td colspan="2">27 active / 47 seats (57.4%)</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div id="exec-6m" class="tab-pane">
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>#</th><th>ชื่อ</th><th class="num">Messages</th><th>ระดับ</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>TAWAT LAOWONGKOT</td><td class="num">3,810</td><td><span class="badge bg">High</span></td></tr>
+          <tr><td>2</td><td>Busaban Dettrairat</td><td class="num">3,640</td><td><span class="badge bg">High</span></td></tr>
+          <tr><td>3</td><td>Poya Chulaluck</td><td class="num">2,140</td><td><span class="badge bg">High</span></td></tr>
+          <tr><td>4</td><td>Atikun Limsukon</td><td class="num">1,880</td><td><span class="badge bg">High</span></td></tr>
+          <tr><td>5</td><td>Pipat Kwanpraekaew</td><td class="num">1,800</td><td><span class="badge bg">High</span></td></tr>
+          <tr><td>6</td><td>Apicha Chaimongkolkarn</td><td class="num">1,020</td><td><span class="badge bb">Medium</span></td></tr>
+          <tr><td>7</td><td>Wilai Aiumpatoomsak</td><td class="num">886</td><td><span class="badge bb">Medium</span></td></tr>
+          <tr><td>8</td><td>plubplueng kotaratititham</td><td class="num">864</td><td><span class="badge bb">Medium</span></td></tr>
+          <tr><td>9</td><td>Narong Laohaviraphap</td><td class="num">809</td><td><span class="badge bb">Medium</span></td></tr>
+          <tr><td>10</td><td>Sutthikorn Tantbirojn <small style="color:var(--g500)">PCU Director ระบบประสาท</small></td><td class="num">620</td><td><span class="badge bb">Medium</span></td></tr>
+          <tr><td>11</td><td>Worapan Nunthasettha <small style="color:var(--g500)">Administration Office Mgr</small></td><td class="num">530</td><td><span class="badge bb">Medium</span></td></tr>
+          <tr><td>12</td><td>wanwarang <small style="color:var(--g500)">CoE Heart Manager</small></td><td class="num">470</td><td><span class="badge bb">Medium</span></td></tr>
+          <tr><td>13</td><td>Promphan <small style="color:var(--g500)">แพทย์ช่วยบริหาร + PCU Director</small></td><td class="num">430</td><td><span class="badge bb">Medium</span></td></tr>
+          <tr><td>14</td><td>jintana nanthahathai <small style="color:var(--g500)">Director of Nursing</small></td><td class="num">360</td><td><span class="badge bb">Medium</span></td></tr>
+          <tr><td>15</td><td>Chiranee Chernun <small style="color:var(--g500)">HR Manager</small></td><td class="num">310</td><td><span class="badge bb">Medium</span></td></tr>
+          <tr><td>16</td><td>arisada pitchayadechakoon <small style="color:var(--g500)">Deputy Director</small></td><td class="num">218</td><td><span class="badge bo">Low</span></td></tr>
+          <tr><td>18</td><td>โสภาพรรณ สุวรรณ <small style="color:var(--g500)">TQCI Manager</small></td><td class="num">185</td><td><span class="badge bo">Low</span></td></tr>
+          <tr><td>19</td><td>Theerachai (นพ.ธีรชัย อภิวรรธกกุล) <small style="color:var(--g500)">แพทย์บริหาร</small></td><td class="num">155</td><td><span class="badge bo">Low</span></td></tr>
+          <tr><td>20</td><td>Tammy Jetaime (เต็มสิริ โกไศยกานนท์) <small style="color:var(--g500)">Pharmacy Manager</small></td><td class="num">93</td><td><span class="badge bk">Very Low</span></td></tr>
+          <tr><td>21</td><td>weerachai nawarawong (นพ.วีระชัย) <small style="color:var(--g500)">ผู้อำนวยการฝ่ายแพทย์</small></td><td class="num">280</td><td><span class="badge bo">Low</span></td></tr>
+          <tr><td>22</td><td>Napeephat Pakdee <small style="color:var(--g500)">CoE Cancer &amp; Neuro Mgr</small></td><td class="num">250</td><td><span class="badge bo">Low</span></td></tr>
+          <tr><td>23</td><td>Dr.Tida V (พญ.ธิดา วัฒนพันธ์พิทักษ์) <small style="color:var(--g500)">แพทย์ช่วยบริหาร</small></td><td class="num">220</td><td><span class="badge bo">Low</span></td></tr>
+          <tr><td>24</td><td>Kanitkanit cho (กณิศนันท์ โชคธนยศเสถียร) <small style="color:var(--g500)">Asst GSD Manager</small></td><td class="num">190</td><td><span class="badge bo">Low</span></td></tr>
+          <tr><td>25</td><td>Watoo Sutthisast (พญ.วธู สุทธิศาสตร์) <small style="color:var(--g500)">PCU Director รังสีวินิจฉัย</small></td><td class="num">175</td><td><span class="badge bk">Very Low</span></td></tr>
+          <tr><td>26</td><td>Bhumie (ทพ.ภวัคร์ ตั้งทางธรรม) <small style="color:var(--g500)">PCU Director ทันตกรรม</small></td><td class="num">155</td><td><span class="badge bk">Very Low</span></td></tr>
+          <tr><td>27</td><td>Sunanta (คุณสุนันทา นาวินรัตนศิริ) <small style="color:var(--g500)">General Support Manager</small></td><td class="num">138</td><td><span class="badge bk">Very Low</span></td></tr>
+          <tr><td>28</td><td>Walailak Piya (วลัยลักษณ์ ปิยะนาวิน) <small style="color:var(--g500)">Finance &amp; Accounting Mgr</small></td><td class="num">118</td><td><span class="badge bk">Very Low</span></td></tr>
+          <tr><td>29</td><td>นพ.วุฒินันท์ มนัสสุนทรวุฒิ <small style="color:var(--g500)">Asst Hospital Director</small></td><td class="num">105</td><td><span class="badge bk">Very Low</span></td></tr>
+          <tr><td>30</td><td>คุณพัชรียา พ่อค้า <small style="color:var(--g500)">IPUs Medicine Manager</small></td><td class="num">90</td><td><span class="badge bk">Very Low</span></td></tr>
+          <tr><td>31</td><td>คุณทิพวรรณ์ ตั้งวัฒนวรกุล <small style="color:var(--g500)">Marketing Manager</small></td><td class="num">80</td><td><span class="badge bk">Very Low</span></td></tr>
+          <tr><td>32</td><td>นพ.อำนาจ ชวาลวุฒิ <small style="color:var(--g500)">ประธานองค์กรแพทย์</small></td><td class="num">35</td><td><span class="badge bk">Very Low</span></td></tr>
+          <tr style="background:var(--g100)"><td colspan="4" style="padding:5px 12px;font-size:10px;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:.5px">⛔ ไม่มีการใช้งาน 6 เดือนนี้ (15 accounts)</td></tr>
+          <tr style="background:#fff8f8"><td style="color:var(--g400)">–</td><td style="color:var(--g400);font-size:12px">นพ.ศิริศักดิ์ โรจนะประเสริฐกิจ <small>Asst Hospital Director</small></td><td class="num" style="color:var(--g400)">0</td><td><span class="badge br">ไม่ใช้</span></td></tr>
+          <tr style="background:#fff8f8"><td style="color:var(--g400)">–</td><td style="color:var(--g400);font-size:12px">นพ.โอภาส พิณไชย <small>แพทย์บริหาร</small></td><td class="num" style="color:var(--g400)">0</td><td><span class="badge br">ไม่ใช้</span></td></tr>
+          <tr style="background:#fff8f8"><td style="color:var(--g400)">–</td><td style="color:var(--g400);font-size:12px">นพ.คมกริช ฐานิสโร <small>แพทย์บริหาร</small></td><td class="num" style="color:var(--g400)">0</td><td><span class="badge br">ไม่ใช้</span></td></tr>
+          <tr style="background:#fff8f8"><td style="color:var(--g400)">–</td><td style="color:var(--g400);font-size:12px">นพ.ศรัณย์ ควรประเสริฐ <small>แพทย์บริหาร</small></td><td class="num" style="color:var(--g400)">0</td><td><span class="badge br">ไม่ใช้</span></td></tr>
+          <tr style="background:#fff8f8"><td style="color:var(--g400)">–</td><td style="color:var(--g400);font-size:12px">นพ.ดนัย อินทรกำแหง <small>แพทย์ช่วยบริหาร</small></td><td class="num" style="color:var(--g400)">0</td><td><span class="badge br">ไม่ใช้</span></td></tr>
+          <tr style="background:#fff8f8"><td style="color:var(--g400)">–</td><td style="color:var(--g400);font-size:12px">พญ.วิกานดา ตันติโสภารักษ์ <small>แพทย์ช่วยบริหาร</small></td><td class="num" style="color:var(--g400)">0</td><td><span class="badge br">ไม่ใช้</span></td></tr>
+          <tr style="background:#fff8f8"><td style="color:var(--g400)">–</td><td style="color:var(--g400);font-size:12px">นพ.วิทวัส อริยวุฒยากร <small>Senior PCU Director</small></td><td class="num" style="color:var(--g400)">0</td><td><span class="badge br">ไม่ใช้</span></td></tr>
+          <tr style="background:#fff8f8"><td style="color:var(--g400)">–</td><td style="color:var(--g400);font-size:12px">นพ.โอฬาร อาภรณ์ชยานนท์ <small>Senior PCU Director</small></td><td class="num" style="color:var(--g400)">0</td><td><span class="badge br">ไม่ใช้</span></td></tr>
+          <tr style="background:#fff8f8"><td style="color:var(--g400)">–</td><td style="color:var(--g400);font-size:12px">พญ.จรรยารัตน์ ทองพรม <small>PCU Director ศัลยกรรม</small></td><td class="num" style="color:var(--g400)">0</td><td><span class="badge br">ไม่ใช้</span></td></tr>
+          <tr style="background:#fff8f8"><td style="color:var(--g400)">–</td><td style="color:var(--g400);font-size:12px">พญ.นภัทร์ธมณฑ์ บุญมา <small>PCU Director สุขภาพสตรี</small></td><td class="num" style="color:var(--g400)">0</td><td><span class="badge br">ไม่ใช้</span></td></tr>
+          <tr style="background:#fff8f8"><td style="color:var(--g400)">–</td><td style="color:var(--g400);font-size:12px">พญ.ศรีสกุล ทิพย์กมล <small>PCU Director อุบัติเหตุ</small></td><td class="num" style="color:var(--g400)">0</td><td><span class="badge br">ไม่ใช้</span></td></tr>
+          <tr style="background:#fff8f8"><td style="color:var(--g400)">–</td><td style="color:var(--g400);font-size:12px">พญ.อุรารัตน์ วสุนธราพร <small>PCU Director ออร์โธ</small></td><td class="num" style="color:var(--g400)">0</td><td><span class="badge br">ไม่ใช้</span></td></tr>
+          <tr style="background:#fff8f8"><td style="color:var(--g400)">–</td><td style="color:var(--g400);font-size:12px">นพ.วัชรวิชญ์ ธนาพวงวรินทร์ <small>PCU Director ส่งเสริมสุขภาพ</small></td><td class="num" style="color:var(--g400)">0</td><td><span class="badge br">ไม่ใช้</span></td></tr>
+          <tr style="background:#fff8f8"><td style="color:var(--g400)">–</td><td style="color:var(--g400);font-size:12px">นพ.ภูมิศักดิ์ สุวรรณศร <small>PCU Director วิสัญญี</small></td><td class="num" style="color:var(--g400)">0</td><td><span class="badge br">ไม่ใช้</span></td></tr>
+          <tr style="background:#f0fdf4;font-weight:700"><td colspan="2">รวม</td><td class="num">22,316</td><td>32 active / 47 seats (68.1%)</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div id="exec-12m" class="tab-pane">
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>#</th><th>ชื่อ</th><th class="num">Messages</th><th>สัดส่วน</th><th>ระดับ</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>TAWAT LAOWONGKOT</td><td class="num">8,610</td><td><span class="bar-bg"><span class="bar-fg" style="width:100%"></span></span>17.1%</td><td><span class="badge bg">High</span></td></tr>
+          <tr><td>2</td><td>Busaban Dettrairat</td><td class="num">5,990</td><td><span class="bar-bg"><span class="bar-fg" style="width:70%"></span></span>11.9%</td><td><span class="badge bg">High</span></td></tr>
+          <tr><td>3</td><td>Poya Chulaluck</td><td class="num">4,600</td><td><span class="bar-bg"><span class="bar-fg" style="width:53%"></span></span>9.1%</td><td><span class="badge bg">High</span></td></tr>
+          <tr><td>4</td><td>Atikun Limsukon</td><td class="num">4,190</td><td><span class="bar-bg"><span class="bar-fg" style="width:49%"></span></span>8.3%</td><td><span class="badge bg">High</span></td></tr>
+          <tr><td>5</td><td>Kanitkanit cho</td><td class="num">3,070</td><td><span class="bar-bg"><span class="bar-fg" style="width:36%"></span></span>6.1%</td><td><span class="badge bg">High</span></td></tr>
+          <tr><td>6</td><td>Pipat Kwanpraekaew</td><td class="num">2,940</td><td><span class="bar-bg"><span class="bar-fg" style="width:34%"></span></span>5.8%</td><td><span class="badge bg">High</span></td></tr>
+          <tr><td>7</td><td>Apicha Chaimongkolkarn</td><td class="num">2,130</td><td>–</td><td><span class="badge bb">Medium</span></td></tr>
+          <tr><td>8</td><td>plubplueng kotaratititham</td><td class="num">2,090</td><td>–</td><td><span class="badge bb">Medium</span></td></tr>
+          <tr><td>9</td><td>Narong Laohaviraphap</td><td class="num">1,820</td><td>–</td><td><span class="badge bb">Medium</span></td></tr>
+          <tr><td>10</td><td>Wilai Aiumpatoomsak</td><td class="num">1,560</td><td>–</td><td><span class="badge bb">Medium</span></td></tr>
+          <tr><td>11</td><td>wanwarang <small style="color:var(--g500)">CoE Heart Manager</small></td><td class="num">2,000</td><td>–</td><td><span class="badge bb">Medium</span></td></tr>
+          <tr><td>12</td><td>Sutthikorn Tantbirojn <small style="color:var(--g500)">PCU Director ระบบประสาท</small></td><td class="num">1,720</td><td>–</td><td><span class="badge bb">Medium</span></td></tr>
+          <tr><td>13</td><td>Promphan <small style="color:var(--g500)">แพทย์ช่วยบริหาร + PCU Director</small></td><td class="num">1,400</td><td>–</td><td><span class="badge bb">Medium</span></td></tr>
+          <tr><td>14</td><td>jintana nanthahathai <small style="color:var(--g500)">Director of Nursing</small></td><td class="num">1,200</td><td>–</td><td><span class="badge bb">Medium</span></td></tr>
+          <tr><td>15</td><td>Chiranee Chernun <small style="color:var(--g500)">HR Manager</small></td><td class="num">1,050</td><td>–</td><td><span class="badge bb">Medium</span></td></tr>
+          <tr><td>16</td><td>Worapan Nunthasettha <small style="color:var(--g500)">Administration Office Mgr</small></td><td class="num">900</td><td>–</td><td><span class="badge bo">Low</span></td></tr>
+          <tr><td>17</td><td>arisada pitchayadechakoon <small style="color:var(--g500)">Deputy Director</small></td><td class="num">650</td><td>–</td><td><span class="badge bo">Low</span></td></tr>
+          <tr><td>19</td><td>โสภาพรรณ สุวรรณ <small style="color:var(--g500)">TQCI Manager</small></td><td class="num">550</td><td>–</td><td><span class="badge bo">Low</span></td></tr>
+          <tr><td>20</td><td>weerachai nawarawong <small style="color:var(--g500)">ผู้อำนวยการฝ่ายแพทย์</small></td><td class="num">470</td><td>–</td><td><span class="badge bo">Low</span></td></tr>
+          <tr><td>21</td><td>Theerachai (นพ.ธีรชัย อภิวรรธกกุล) <small style="color:var(--g500)">แพทย์บริหาร</small></td><td class="num">405</td><td>–</td><td><span class="badge bo">Low</span></td></tr>
+          <tr><td>22</td><td>Tammy Jetaime (เต็มสิริ โกไศยกานนท์) <small style="color:var(--g500)">Pharmacy Manager</small></td><td class="num">345</td><td>–</td><td><span class="badge bo">Low</span></td></tr>
+          <tr><td>23</td><td>Napeephat Pakdee <small style="color:var(--g500)">CoE Cancer &amp; Neuro Mgr</small></td><td class="num">285</td><td>–</td><td><span class="badge bk">Very Low</span></td></tr>
+          <tr><td>24</td><td>Dr.Tida V (พญ.ธิดา วัฒนพันธ์พิทักษ์) <small style="color:var(--g500)">แพทย์ช่วยบริหาร</small></td><td class="num">240</td><td>–</td><td><span class="badge bk">Very Low</span></td></tr>
+          <tr><td>25</td><td>Watoo Sutthisast (พญ.วธู สุทธิศาสตร์) <small style="color:var(--g500)">PCU Director รังสีวินิจฉัย</small></td><td class="num">200</td><td>–</td><td><span class="badge bk">Very Low</span></td></tr>
+          <tr><td>26</td><td>Bhumie (ทพ.ภวัคร์ ตั้งทางธรรม) <small style="color:var(--g500)">PCU Director ทันตกรรม</small></td><td class="num">168</td><td>–</td><td><span class="badge bk">Very Low</span></td></tr>
+          <tr><td>27</td><td>Sunanta (คุณสุนันทา นาวินรัตนศิริ) <small style="color:var(--g500)">General Support Manager</small></td><td class="num">142</td><td>–</td><td><span class="badge bk">Very Low</span></td></tr>
+          <tr><td>28</td><td>Walailak Piya (วลัยลักษณ์ ปิยะนาวิน) <small style="color:var(--g500)">Finance &amp; Accounting Mgr</small></td><td class="num">120</td><td>–</td><td><span class="badge bk">Very Low</span></td></tr>
+          <tr><td>29</td><td>นพ.วุฒินันท์ มนัสสุนทรวุฒิ <small style="color:var(--g500)">Asst Hospital Director</small></td><td class="num">101</td><td>–</td><td><span class="badge bk">Very Low</span></td></tr>
+          <tr><td>30</td><td>คุณพัชรียา พ่อค้า <small style="color:var(--g500)">IPUs Medicine Manager</small></td><td class="num">90</td><td>–</td><td><span class="badge bk">Very Low</span></td></tr>
+          <tr><td>31</td><td>คุณทิพวรรณ์ ตั้งวัฒนวรกุล <small style="color:var(--g500)">Marketing Manager</small></td><td class="num">80</td><td>–</td><td><span class="badge bk">Very Low</span></td></tr>
+          <tr><td>32</td><td>นพ.อำนาจ ชวาลวุฒิ <small style="color:var(--g500)">ประธานองค์กรแพทย์</small></td><td class="num">71</td><td>–</td><td><span class="badge bk">Very Low</span></td></tr>
+          <tr><td>33</td><td>นพ.โอภาส พิณไชย <small style="color:var(--g500)">แพทย์บริหาร</small></td><td class="num">56</td><td>–</td><td><span class="badge bk">Very Low</span></td></tr>
+          <tr><td>35</td><td>นพ.คมกริช ฐานิสโร <small style="color:var(--g500)">แพทย์บริหาร</small></td><td class="num">50</td><td>–</td><td><span class="badge bk">Very Low</span></td></tr>
+          <tr><td>36</td><td>นพ.ดนัย อินทรกำแหง <small style="color:var(--g500)">แพทย์ช่วยบริหาร</small></td><td class="num">45</td><td>–</td><td><span class="badge bk">Very Low</span></td></tr>
+          <tr><td>37</td><td>พญ.วิกานดา ตันติโสภารักษ์ <small style="color:var(--g500)">แพทย์ช่วยบริหาร</small></td><td class="num">40</td><td>–</td><td><span class="badge bk">Very Low</span></td></tr>
+          <tr><td>38</td><td>นพ.โอฬาร อาภรณ์ชยานนท์ <small style="color:var(--g500)">Senior PCU Director</small></td><td class="num">35</td><td>–</td><td><span class="badge bk">Very Low</span></td></tr>
+          <tr><td>39</td><td>พญ.จรรยารัตน์ ทองพรม <small style="color:var(--g500)">PCU Director ศัลยกรรม</small></td><td class="num">30</td><td>–</td><td><span class="badge bk">Very Low</span></td></tr>
+          <tr><td>40</td><td>พญ.อุรารัตน์ วสุนธราพร <small style="color:var(--g500)">PCU Director ออร์โธ</small></td><td class="num">25</td><td>–</td><td><span class="badge bk">Very Low</span></td></tr>
+          <tr style="background:var(--g100)"><td colspan="5" style="padding:5px 12px;font-size:10px;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:.5px">⛔ ไม่มีการใช้งานตลอด 12 เดือน (7 accounts)</td></tr>
+          <tr style="background:#fff8f8"><td style="color:var(--g400)">–</td><td style="color:var(--g400);font-size:12px">นพ.ศิริศักดิ์ โรจนะประเสริฐกิจ <small>Asst Hospital Director</small></td><td class="num" style="color:var(--g400)">0</td><td>–</td><td><span class="badge br">ไม่ใช้</span></td></tr>
+          <tr style="background:#fff8f8"><td style="color:var(--g400)">–</td><td style="color:var(--g400);font-size:12px">นพ.ศรัณย์ ควรประเสริฐ <small>แพทย์บริหาร</small></td><td class="num" style="color:var(--g400)">0</td><td>–</td><td><span class="badge br">ไม่ใช้</span></td></tr>
+          <tr style="background:#fff8f8"><td style="color:var(--g400)">–</td><td style="color:var(--g400);font-size:12px">พญ.นภัทร์ธมณฑ์ บุญมา <small>PCU Director สุขภาพสตรี</small></td><td class="num" style="color:var(--g400)">0</td><td>–</td><td><span class="badge br">ไม่ใช้</span></td></tr>
+          <tr style="background:#fff8f8"><td style="color:var(--g400)">–</td><td style="color:var(--g400);font-size:12px">พญ.ศรีสกุล ทิพย์กมล <small>PCU Director อุบัติเหตุ</small></td><td class="num" style="color:var(--g400)">0</td><td>–</td><td><span class="badge br">ไม่ใช้</span></td></tr>
+          <tr style="background:#fff8f8"><td style="color:var(--g400)">–</td><td style="color:var(--g400);font-size:12px">นพ.วัชรวิชญ์ ธนาพวงวรินทร์ <small>PCU Director ส่งเสริมสุขภาพ</small></td><td class="num" style="color:var(--g400)">0</td><td>–</td><td><span class="badge br">ไม่ใช้</span></td></tr>
+          <tr style="background:#fff8f8"><td style="color:var(--g400)">–</td><td style="color:var(--g400);font-size:12px">นพ.ภูมิศักดิ์ สุวรรณศร <small>PCU Director วิสัญญี</small></td><td class="num" style="color:var(--g400)">0</td><td>–</td><td><span class="badge br">ไม่ใช้</span></td></tr>
+          <tr style="background:#fff8f8"><td style="color:var(--g400)">–</td><td style="color:var(--g400);font-size:12px">นพ.วิทวัส อริยวุฒยากร <small>Senior PCU Director</small></td><td class="num" style="color:var(--g400)">0</td><td>–</td><td><span class="badge br">ไม่ใช้</span></td></tr>
+          <tr style="background:#f0fdf4;font-weight:700"><td colspan="2">รวม</td><td class="num">50,291</td><td colspan="2">40 active / 47 seats (85.1%)</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+
+  <!-- DIVISION TABLE -->
+  <div class="sec-title">🏢 Division Workspace – BCM Team (20 Department Accounts)</div>
+  <div class="alert alert-warn">
+    <span style="font-size:18px">⚠️</span>
+    <div><strong>Workspace จะถูก Deactivate!</strong> ยังเข้าถึงได้ถึงวันที่ <strong>21 สิงหาคม 2569</strong> — ต้องพิจารณาต่ออายุหรือหา Solution ทดแทนก่อนวันดังกล่าว</div>
+  </div>
+  <div class="kpi-row">
+    <div class="kpi"><div class="kpi-l">1M Active Depts</div><div class="kpi-v">17/20</div><div class="kpi-s">85% dept utilization</div></div>
+    <div class="kpi b"><div class="kpi-l">6M Active Depts</div><div class="kpi-v">20/20</div><div class="kpi-s">100% dept utilization</div></div>
+    <div class="kpi o"><div class="kpi-l">12M Total Messages</div><div class="kpi-v">26,343</div><div class="kpi-s">~2,195/month avg</div></div>
+    <div class="kpi p"><div class="kpi-l">Top Division (12M)</div><div class="kpi-v">Trauma</div><div class="kpi-s">2,870 msgs – CoE Heart & Trauma</div></div>
+  </div>
+  <div class="card">
+    <div class="tab-bar">
+      <button class="tab active" onclick="showTab('div','1m',this)">1M MAY 2026</button>
+      <button class="tab" onclick="showTab('div','6m',this)">6M DEC–MAY</button>
+      <button class="tab" onclick="showTab('div','12m',this)">12M MAY–MAY</button>
+    </div>
+    <div id="div-1m" class="tab-pane active">
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>#</th><th>Division / Department</th><th class="num">Messages</th><th>สัดส่วน</th><th>ระดับ</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>BCMSHE (Facility Mgmt)</td><td class="num">348</td><td><span class="bar-bg"><span class="bar-fg" style="width:100%"></span></span>11.4%</td><td><span class="badge bg">High</span></td></tr>
+          <tr><td>2</td><td>Trauma (CoE Heart &amp; Trauma)</td><td class="num">329</td><td><span class="bar-bg"><span class="bar-fg" style="width:95%"></span></span>10.8%</td><td><span class="badge bg">High</span></td></tr>
+          <tr><td>3</td><td>BCM Rehab</td><td class="num">326</td><td><span class="bar-bg"><span class="bar-fg" style="width:94%"></span></span>10.7%</td><td><span class="badge bg">High</span></td></tr>
+          <tr><td>4</td><td>BCM NPT (Nurse Support)</td><td class="num">300</td><td><span class="bar-bg"><span class="bar-fg" style="width:86%"></span></span>9.8%</td><td><span class="badge bg">High</span></td></tr>
+          <tr><td>5</td><td>Imaging Admin</td><td class="num">222</td><td><span class="bar-bg"><span class="bar-fg" style="width:64%"></span></span>7.3%</td><td><span class="badge bb">Medium</span></td></tr>
+          <tr><td>6</td><td>BCM Medicine (IPUs Medicine)</td><td class="num">221</td><td><span class="bar-bg"><span class="bar-fg" style="width:64%"></span></span>7.2%</td><td><span class="badge bb">Medium</span></td></tr>
+          <tr><td>7</td><td>CoE Neuro and Cancer</td><td class="num">188</td><td><span class="bar-bg"><span class="bar-fg" style="width:54%"></span></span>6.2%</td><td><span class="badge bb">Medium</span></td></tr>
+          <tr><td>8</td><td>Accounting &amp; Finance</td><td class="num">163</td><td><span class="bar-bg"><span class="bar-fg" style="width:47%"></span></span>5.3%</td><td><span class="badge bb">Medium</span></td></tr>
+          <tr><td>9</td><td>BCM HR</td><td class="num">146</td><td><span class="bar-bg"><span class="bar-fg" style="width:42%"></span></span>4.8%</td><td><span class="badge bb">Medium</span></td></tr>
+          <tr><td>10</td><td>BCM Pharmacy</td><td class="num">145</td><td><span class="bar-bg"><span class="bar-fg" style="width:42%"></span></span>4.7%</td><td><span class="badge bb">Medium</span></td></tr>
+          <tr><td>11</td><td>BCM MAO</td><td class="num">140</td><td><span class="bar-bg"><span class="bar-fg" style="width:40%"></span></span>4.6%</td><td><span class="badge bb">Medium</span></td></tr>
+          <tr><td>12</td><td>waraporn praiboon</td><td class="num">123</td><td>–</td><td><span class="badge bo">Low</span></td></tr>
+          <tr><td>13</td><td>IPU Ped (PED &amp; OBGYN)</td><td class="num">122</td><td>–</td><td><span class="badge bo">Low</span></td></tr>
+          <tr><td>14</td><td>URNurse (Utilization Mgmt)</td><td class="num">102</td><td>–</td><td><span class="badge bo">Low</span></td></tr>
+          <tr><td>15</td><td>BCM TQCI</td><td class="num">94</td><td>–</td><td><span class="badge bo">Low</span></td></tr>
+          <tr><td>16</td><td>BCM GSD</td><td class="num">54</td><td>–</td><td><span class="badge bk">Very Low</span></td></tr>
+          <tr><td>17</td><td>BCM HDO</td><td class="num">35</td><td>–</td><td><span class="badge bk">Very Low</span></td></tr>
+          <tr><td>–</td><td>BCM CONTRACT AND LEGAL</td><td class="num">0</td><td>–</td><td><span class="badge br">ไม่ใช้</span></td></tr>
+          <tr><td>–</td><td>surgery (IPUs Surgery)</td><td class="num">0</td><td>–</td><td><span class="badge br">ไม่ใช้</span></td></tr>
+          <tr style="background:#f0fdf4;font-weight:700"><td colspan="2">รวม</td><td class="num">3,058</td><td colspan="2">17 active / 20 depts</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div id="div-6m" class="tab-pane">
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>#</th><th>Division</th><th class="num">Messages</th><th>ระดับ</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Trauma</td><td class="num">1,810</td><td><span class="badge bg">High</span></td></tr>
+          <tr><td>2</td><td>BCM Rehab</td><td class="num">1,730</td><td><span class="badge bg">High</span></td></tr>
+          <tr><td>3</td><td>BCM NPT</td><td class="num">1,710</td><td><span class="badge bg">High</span></td></tr>
+          <tr><td>4</td><td>BCMSHE</td><td class="num">1,580</td><td><span class="badge bg">High</span></td></tr>
+          <tr><td>5</td><td>Imaging Admin</td><td class="num">1,170</td><td><span class="badge bg">High</span></td></tr>
+          <tr><td>6</td><td>BCM Medicine</td><td class="num">1,100</td><td><span class="badge bg">High</span></td></tr>
+          <tr><td>7</td><td>A&amp;F</td><td class="num">799</td><td><span class="badge bb">Medium</span></td></tr>
+          <tr><td>8</td><td>CoE Neuro and Cancer</td><td class="num">694</td><td><span class="badge bb">Medium</span></td></tr>
+          <tr><td>9</td><td>BCM Pharmacy</td><td class="num">646</td><td><span class="badge bb">Medium</span></td></tr>
+          <tr><td>10</td><td>BCM HR</td><td class="num">598</td><td><span class="badge bb">Medium</span></td></tr>
+          <tr><td>11</td><td>BCM MAO</td><td class="num">521</td><td><span class="badge bb">Medium</span></td></tr>
+          <tr><td>12</td><td>BCM Contract &amp; Legal</td><td class="num">490</td><td><span class="badge bb">Medium</span></td></tr>
+          <tr><td>13</td><td>URNurse</td><td class="num">389</td><td><span class="badge bo">Low</span></td></tr>
+          <tr><td>14</td><td>IPU Ped</td><td class="num">345</td><td><span class="badge bo">Low</span></td></tr>
+          <tr><td>15</td><td>BCM GSD</td><td class="num">323</td><td><span class="badge bo">Low</span></td></tr>
+          <tr><td>16</td><td>BCM TQCI</td><td class="num">176</td><td><span class="badge bk">Very Low</span></td></tr>
+          <tr><td>17</td><td>waraporn praiboon</td><td class="num">168</td><td><span class="badge bk">Very Low</span></td></tr>
+          <tr><td>18</td><td>Inter (Marketing/BRC)</td><td class="num">88</td><td><span class="badge bk">Very Low</span></td></tr>
+          <tr><td>19</td><td>surgery</td><td class="num">79</td><td><span class="badge bk">Very Low</span></td></tr>
+          <tr><td>20</td><td>BCM HDO</td><td class="num">74</td><td><span class="badge bk">Very Low</span></td></tr>
+          <tr style="background:#f0fdf4;font-weight:700"><td colspan="2">รวม</td><td class="num">14,476</td><td>20/20 · 100% utilization</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div id="div-12m" class="tab-pane">
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>#</th><th>Division</th><th class="num">Messages (12M)</th><th>สัดส่วน</th><th>ระดับ</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Trauma (CoE Heart &amp; Trauma)</td><td class="num">2,870</td><td><span class="bar-bg"><span class="bar-fg" style="width:100%"></span></span>10.9%</td><td><span class="badge bg">High</span></td></tr>
+          <tr><td>2</td><td>BCM NPT</td><td class="num">2,430</td><td><span class="bar-bg"><span class="bar-fg" style="width:85%"></span></span>9.2%</td><td><span class="badge bg">High</span></td></tr>
+          <tr><td>3</td><td>BCMSHE</td><td class="num">2,350</td><td><span class="bar-bg"><span class="bar-fg" style="width:82%"></span></span>8.9%</td><td><span class="badge bg">High</span></td></tr>
+          <tr><td>4</td><td>BCM Rehab</td><td class="num">2,150</td><td><span class="bar-bg"><span class="bar-fg" style="width:75%"></span></span>8.2%</td><td><span class="badge bg">High</span></td></tr>
+          <tr><td>5</td><td>Imaging Admin</td><td class="num">2,060</td><td><span class="bar-bg"><span class="bar-fg" style="width:72%"></span></span>7.8%</td><td><span class="badge bg">High</span></td></tr>
+          <tr><td>6</td><td>BCM Medicine</td><td class="num">1,910</td><td><span class="bar-bg"><span class="bar-fg" style="width:67%"></span></span>7.3%</td><td><span class="badge bg">High</span></td></tr>
+          <tr><td>7</td><td>BCM Pharmacy</td><td class="num">1,870</td><td><span class="bar-bg"><span class="bar-fg" style="width:65%"></span></span>7.1%</td><td><span class="badge bg">High</span></td></tr>
+          <tr><td>8</td><td>CoE Neuro and Cancer</td><td class="num">1,640</td><td><span class="bar-bg"><span class="bar-fg" style="width:57%"></span></span>6.2%</td><td><span class="badge bb">Medium</span></td></tr>
+          <tr><td>9</td><td>Inter (Marketing/BRC)</td><td class="num">1,350</td><td>–</td><td><span class="badge bb">Medium</span></td></tr>
+          <tr><td>10</td><td>BCM GSD</td><td class="num">1,210</td><td>–</td><td><span class="badge bb">Medium</span></td></tr>
+          <tr><td>11</td><td>Accounting &amp; Finance</td><td class="num">1,190</td><td>–</td><td><span class="badge bb">Medium</span></td></tr>
+          <tr><td>12</td><td>BCM Contract &amp; Legal</td><td class="num">1,150</td><td>–</td><td><span class="badge bb">Medium</span></td></tr>
+          <tr><td>13</td><td>BCM HR</td><td class="num">1,120</td><td>–</td><td><span class="badge bb">Medium</span></td></tr>
+          <tr><td>14</td><td>BCM MAO</td><td class="num">1,090</td><td>–</td><td><span class="badge bb">Medium</span></td></tr>
+          <tr><td>15</td><td>IPU Ped</td><td class="num">747</td><td>–</td><td><span class="badge bo">Low</span></td></tr>
+          <tr><td>16</td><td>URNurse</td><td class="num">649</td><td>–</td><td><span class="badge bo">Low</span></td></tr>
+          <tr><td>17</td><td>BCM TQCI</td><td class="num">176</td><td>–</td><td><span class="badge bk">Very Low</span></td></tr>
+          <tr><td>18</td><td>waraporn praiboon</td><td class="num">168</td><td>–</td><td><span class="badge bk">Very Low</span></td></tr>
+          <tr><td>19</td><td>surgery</td><td class="num">115</td><td>–</td><td><span class="badge bk">Very Low</span></td></tr>
+          <tr><td>20</td><td>BCM HDO</td><td class="num">111</td><td>–</td><td><span class="badge bk">Very Low</span></td></tr>
+          <tr style="background:#f0fdf4;font-weight:700"><td colspan="2">รวม</td><td class="num">26,343</td><td colspan="2">20/20 · 100% utilization</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+
+</div><!-- end sec0 -->
+
+<!-- ══════════════════════════════════════════
+     SECTION 2 — AI SURVEY & EFFICIENCY
+══════════════════════════════════════════ -->
+<div class="section" id="sec1">
+
+  <div class="sec-title" style="margin-top:8px">📋 ผลสำรวจ AI Tools + AI Efficiency Score (APR 2026)</div>
+  <div class="alert alert-info">
+    <span style="font-size:18px">📊</span>
+    <div>สำรวจ <strong>732 คน (73.2%)</strong> · Efficiency Score คำนวณจาก 5 มิติ: คุณภาพงาน, ความสะดวก, ความมั่นใจ, นวัตกรรม, ความพึงพอใจโดยรวม (max 25 คะแนน) อิงจากแบบสำรวจ BCM AI Tools Survey 2026</div>
+  </div>
+
+  <div class="kpi-row">
+    <div class="kpi"><div class="kpi-l">ผู้ตอบแบบสำรวจ</div><div class="kpi-v">732</div><div class="kpi-s">73.2% response rate</div></div>
+    <div class="kpi b"><div class="kpi-l">ต้องการ Gemini+NB</div><div class="kpi-v">635</div><div class="kpi-s">86.8% — Priority #1</div></div>
+    <div class="kpi gem"><div class="kpi-l">Avg Org Efficiency Score</div><div class="kpi-v">20.3</div><div class="kpi-s">81.2% จากคะแนนเต็ม 25</div></div>
+    <div class="kpi o"><div class="kpi-l">Top Efficiency Dept</div><div class="kpi-v">BCM HDO</div><div class="kpi-s">23.76/25 = 95.1%</div></div>
+  </div>
+
+  <!-- Overall Tool Preference -->
+  <div class="grid2">
+    <div class="card">
+      <h3>🏆 AI Tools ที่บุคลากร BCM ต้องการ (รวมทั้งองค์กร)</h3>
+      <div style="padding:8px 0">
+        <div class="survey-bar-row"><div class="survey-bar-label">Gemini + NotebookLM</div><div class="survey-bar-track"><div class="survey-bar-fill" style="width:86.8%;background:#4285f4">635 คน</div></div><div class="survey-bar-pct">86.8%</div></div>
+        <div class="survey-bar-row"><div class="survey-bar-label">Claude (Anthropic)</div><div class="survey-bar-track"><div class="survey-bar-fill" style="width:24.5%;background:#d97706">179 คน</div></div><div class="survey-bar-pct">24.5%</div></div>
+        <div class="survey-bar-row"><div class="survey-bar-label">Gamma (Presentation)</div><div class="survey-bar-track"><div class="survey-bar-fill" style="width:20.1%;background:#7c3aed">147 คน</div></div><div class="survey-bar-pct">20.1%</div></div>
+        <div class="survey-bar-row"><div class="survey-bar-label">Perplexity</div><div class="survey-bar-track"><div class="survey-bar-fill" style="width:11.5%;background:#0891b2">84 คน</div></div><div class="survey-bar-pct">11.5%</div></div>
+        <div class="survey-bar-row"><div class="survey-bar-label">Manus</div><div class="survey-bar-track"><div class="survey-bar-fill" style="width:7.8%;background:#7c3aed">57 คน</div></div><div class="survey-bar-pct">7.8%</div></div>
+        <div class="survey-bar-row"><div class="survey-bar-label">ChatGPT (ปัจจุบัน)</div><div class="survey-bar-track"><div class="survey-bar-fill" style="width:100%;background:#10a37f;opacity:.4">ใช้อยู่ปัจจุบัน · ต้นทุน ฿673K/ปี</div></div><div class="survey-bar-pct">–</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>📊 AI Efficiency Score รายภาพรวม (Survey-based, out of 25)</h3>
+      <div class="chart-ht"><canvas id="c_eff_overview"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Efficiency Score per Division Table -->
+  <div class="card">
+    <h3>📊 Efficiency Score + ChatGPT Usage แยก Division (อิงจากแบบสำรวจ BCM AI Tools Survey 2026)</h3>
+    <div style="font-size:11px;color:var(--g500);margin-bottom:10px">
+      Efficiency Score = ค่าเฉลี่ยถ่วงน้ำหนักจาก 5 มิติ (คุณภาพงาน, ความสะดวก, ความมั่นใจ, นวัตกรรม, โดยรวม) สูงสุด 25 คะแนน ·
+      <strong style="color:#16a34a">TIER 1A ≥24</strong> · <strong style="color:#2563eb">TIER 1B ≥22</strong> · <strong style="color:#d97706">TIER 2 ≥20</strong> · <strong style="color:#dc2626">TIER 3 &lt;20</strong>
+    </div>
+    <div class="tbl-wrap"><table>
+      <thead><tr>
+        <th>Division (ChatGPT Account)</th>
+        <th>Survey Division</th>
+        <th class="num">ผู้ตอบ</th>
+        <th>Efficiency Score</th>
+        <th>% Score</th>
+        <th>AI Tier</th>
+        <th>ChatGPT 1M msgs</th>
+        <th>Gemini Want%</th>
+        <th>ข้อสังเกต</th>
+      </tr></thead>
+      <tbody id="eff-tbody">
+        <!-- Rendered by JS -->
+      </tbody>
+    </table></div>
+  </div>
+
+  <!-- Efficiency Chart -->
+  <div class="grid2">
+    <div class="card">
+      <h3>📊 Efficiency Score vs ChatGPT Usage (1M) – Division</h3>
+      <div class="chart-xl"><canvas id="c_eff_scatter"></canvas></div>
+    </div>
+    <div class="card">
+      <h3>🏆 Efficiency Score Ranking – Division (Survey Data)</h3>
+      <div class="chart-xl"><canvas id="c_eff_rank"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Key Insights -->
+  <div class="verdict">
+    <h3>💡 Key Insights: Efficiency Score vs ChatGPT Usage</h3>
+    <div class="verdict-grid">
+      <div class="vi">
+        <div class="vi-icon">🥇</div>
+        <div class="vi-title">High Efficiency + High Usage</div>
+        <div class="vi-body">BCM HR (93%), BCM MAO (92%), BCM HDO (95%) มี Efficiency Score สูง และใช้ ChatGPT จริงในระดับดี — แผนกเหล่านี้ได้ประโยชน์จาก AI สูงสุด</div>
+      </div>
+      <div class="vi">
+        <div class="vi-icon">⚠️</div>
+        <div class="vi-title">Low Efficiency (ต้องพัฒนา)</div>
+        <div class="vi-body">BCMSHE มี Efficiency Score เพียง 60% (ต่ำสุด) แม้ใช้ ChatGPT สูง (1M: 348 msgs) — แสดงว่าใช้ AI บ่อย แต่ยังได้ประโยชน์ไม่เต็มที่ ควรจัดอบรม AI Literacy</div>
+      </div>
+      <div class="vi">
+        <div class="vi-icon">🔄</div>
+        <div class="vi-title">Gemini vs ChatGPT Mismatch</div>
+        <div class="vi-body">86.8% ต้องการ Gemini แต่ปัจจุบันใช้ ChatGPT — IPUs Surgery ต้องการ Gemini 90% แต่ ChatGPT Usage = 0 แสดงถึง Unmet Need ที่ต้องแก้ไข</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end sec1 -->
+
+<!-- ══════════════════════════════════════════
+     SECTION 3 — COST COMPARISON
+══════════════════════════════════════════ -->
+<div class="section" id="sec2">
+
+  <div class="sec-title" style="margin-top:8px">💡 เปรียบเทียบ Solution: Mix & Match Subscription Calculator</div>
+
+  <div class="alert alert-red">
+    <span style="font-size:18px">🔴</span>
+    <div><strong>สถานการณ์ปัจจุบัน:</strong> Division Workspace จะ Deactivate <strong>21 ส.ค. 2569</strong> · ค่าใช้จ่ายรวมปัจจุบัน <strong>~฿673,750/ปี</strong> · 86.8% ต้องการ Gemini ไม่ใช่ ChatGPT</div>
+  </div>
+
+  <!-- SPLIT MIX & MATCH CALCULATOR -->
+  <div class="mix-calc">
+    <div class="mix-calc-header">
+      <h3>🧮 Mix &amp; Match Cost Calculator — แยก Executive &amp; Division แต่ละ Workspace อิสระ</h3>
+      <div class="fx-field">
+        <label>💱 อัตราแลกเปลี่ยน (THB/USD)</label>
+        <input type="number" id="fxRate" value="33.5" min="30" max="42" step="0.1" oninput="calcMix()">
+      </div>
+    </div>
+
+    <!-- Column headers (shared) -->
+    <div style="display:grid;grid-template-columns:260px 90px 120px 130px 140px;padding:8px 16px;background:var(--g100);border-bottom:1px solid var(--g200);gap:12px;font-size:10px;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:.5px">
+      <div>Tool / Plan</div><div style="text-align:center">Seats</div>
+      <div style="text-align:right">ราคา/User/เดือน</div>
+      <div style="text-align:right">ค่าใช้จ่าย/เดือน</div>
+      <div style="text-align:right">ค่าใช้จ่าย/ปี</div>
+    </div>
+
+    <!-- ══════════════════ EXECUTIVE WORKSPACE ══════════════════ -->
+    <div style="border-left:5px solid var(--gpt)">
+      <div style="background:linear-gradient(135deg,#064e3b,#059669);color:white;padding:11px 16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+        <span style="font-weight:800;font-size:13px">🟢 Executive Workspace — 47 Seats (BCM Managers + Doctors)</span>
+        <span style="font-size:11px;opacity:.8">ChatGPT Team ปัจจุบัน: ฿472,350/ปี</span>
+      </div>
+
+      <div class="mix-section-hdr paid" style="background:#047857">💳 A · Direct Subscription (Paid)</div>
+      <div class="mix-row">
+        <div class="mix-tool-name">💬 ChatGPT Team / Business<span class="mix-tool-sub">OpenAI · GPT-4o, DALL·E, Code Interpreter</span></div>
+        <div style="text-align:center"><input class="mix-seats-input" type="number" id="e_gpt" value="47" min="0" oninput="calcMix()"></div>
+        <div class="mix-cost-mo" id="e_pu_gpt">$25 · ฿838/เดือน</div>
+        <div class="mix-cost-mo" id="e_mo_gpt">฿39,363</div>
+        <div class="mix-cost-yr" id="e_yr_gpt" style="color:var(--red)">฿472,350</div>
+      </div>
+      <div class="mix-row">
+        <div class="mix-tool-name">🌟 Gemini Advanced<span class="mix-tool-sub">Google · Gemini + NotebookLM + Workspace AI</span></div>
+        <div style="text-align:center"><input class="mix-seats-input" type="number" id="e_gem" value="0" min="0" oninput="calcMix()"></div>
+        <div class="mix-cost-mo" id="e_pu_gem">$20 · ฿670/เดือน</div>
+        <div class="mix-cost-mo" id="e_mo_gem">฿0</div>
+        <div class="mix-cost-yr" id="e_yr_gem" style="color:var(--gem)">฿0</div>
+      </div>
+      <div class="mix-row mix-row-last">
+        <div class="mix-tool-name">🟠 Claude Pro / Teams<span class="mix-tool-sub">Anthropic · Claude Sonnet/Opus, Large context</span></div>
+        <div style="text-align:center"><input class="mix-seats-input" type="number" id="e_cla" value="0" min="0" oninput="calcMix()"></div>
+        <div class="mix-cost-mo" id="e_pu_cla">$20 · ฿670/เดือน</div>
+        <div class="mix-cost-mo" id="e_mo_cla">฿0</div>
+        <div class="mix-cost-yr" id="e_yr_cla" style="color:var(--cla)">฿0</div>
+      </div>
+
+      <div class="mix-section-hdr free">🆓 B · Free Tiers</div>
+      <div class="mix-row">
+        <div class="mix-tool-name">💬 ChatGPT Free<span class="mix-tool-sub">GPT-4o Mini · ~20 msgs/day · ไม่มี Team Admin</span></div>
+        <div style="text-align:center"><input class="mix-seats-input" type="number" id="e_gpt_f" value="0" min="0" oninput="calcMix()"></div>
+        <div class="mix-cost-mo"><span class="mix-free-note">FREE</span></div>
+        <div class="mix-cost-mo">฿0</div><div class="mix-cost-yr">฿0</div>
+      </div>
+      <div class="mix-row">
+        <div class="mix-tool-name">🌟 Gemini Free<span class="mix-tool-sub">Gemini Flash · Limited</span></div>
+        <div style="text-align:center"><input class="mix-seats-input" type="number" id="e_gem_f" value="0" min="0" oninput="calcMix()"></div>
+        <div class="mix-cost-mo"><span class="mix-free-note">FREE</span></div>
+        <div class="mix-cost-mo">฿0</div><div class="mix-cost-yr">฿0</div>
+      </div>
+      <div class="mix-row mix-row-last">
+        <div class="mix-tool-name">🟠 Claude Free<span class="mix-tool-sub">Claude Haiku · ~5 msgs/day</span></div>
+        <div style="text-align:center"><input class="mix-seats-input" type="number" id="e_cla_f" value="0" min="0" oninput="calcMix()"></div>
+        <div class="mix-cost-mo"><span class="mix-free-note">FREE</span></div>
+        <div class="mix-cost-mo">฿0</div><div class="mix-cost-yr">฿0</div>
+      </div>
+
+      <div class="mix-section-hdr api">🔀 C · OpenRouter (API Pay-per-Token)</div>
+      <div class="mix-row mix-row-last">
+        <div>
+          <div class="mix-tool-name">🔀 OpenRouter API<span class="mix-tool-sub">300+ models · GPT-4o, Gemini, Claude via API + 5.5% fee</span></div>
+          <div style="margin-top:6px;display:flex;gap:10px;flex-wrap:wrap">
+            <label style="font-size:11px;color:var(--g600)">Messages/ปี: <input class="mix-seats-input" type="number" id="e_or_msgs" value="0" min="0" style="width:90px" oninput="calcMix()"></label>
+            <label style="font-size:11px;color:var(--g600)">Model:
+              <select id="e_or_model" onchange="calcMix()" style="border:1.5px solid var(--g300);border-radius:6px;padding:5px 8px;font-size:12px;background:var(--g50)">
+                <option value="gpt4o">GPT-4o ($2.50/$10/M)</option>
+                <option value="gpt4mini">GPT-4o Mini ($0.15/$0.60/M)</option>
+                <option value="gemini">Gemini Flash ($0.075/$0.30/M)</option>
+                <option value="claude">Claude Sonnet ($3/$15/M)</option>
+                <option value="deepseek">DeepSeek R1 ($0.01/$0.03/M)</option>
+              </select></label>
+          </div>
+        </div>
+        <div></div>
+        <div class="mix-cost-mo" id="e_or_rate">$2.50/$10/M</div>
+        <div class="mix-cost-mo" id="e_mo_or">฿0</div>
+        <div class="mix-cost-yr" id="e_yr_or" style="color:var(--orange)">฿0</div>
+      </div>
+
+      <div class="mix-section-hdr thai">🇹🇭 D · True AI Hub</div>
+      <div class="mix-row mix-row-last">
+        <div class="mix-tool-name">🇹🇭 True AI Hub<span class="mix-tool-sub">50+ AI Models รวม Gemini · Thai Language · TrueBusiness</span></div>
+        <div style="text-align:center"><input class="mix-seats-input" type="number" id="e_thai" value="0" min="0" oninput="calcMix()"></div>
+        <div class="mix-cost-mo">฿399/user/mo</div>
+        <div class="mix-cost-mo" id="e_mo_thai">฿0</div>
+        <div class="mix-cost-yr" id="e_yr_thai" style="color:var(--pink)">฿0</div>
+      </div>
+
+      <!-- Executive Subtotal -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;padding:14px 20px;background:#f0fdf4;border-top:2px solid var(--gpt)">
+        <div class="mix-sum-box" style="border-color:var(--gpt)">
+          <div class="mix-sum-label">🟢 Executive Seats (Paid)</div>
+          <div class="mix-sum-val" id="e_sum_seats">47</div>
+          <div class="mix-sum-sub" id="e_sum_seats_s">47 paid + 0 free</div>
+        </div>
+        <div class="mix-sum-box highlight">
+          <div class="mix-sum-label">💰 Executive / เดือน</div>
+          <div class="mix-sum-val" id="e_sum_mo">฿39,363</div>
+        </div>
+        <div class="mix-sum-box highlight">
+          <div class="mix-sum-label">📅 Executive / ปี</div>
+          <div class="mix-sum-val" id="e_sum_yr">฿472,350</div>
+        </div>
+      </div>
+    </div><!-- end exec panel -->
+
+    <!-- ══════════════════ DIVISION WORKSPACE ══════════════════ -->
+    <div style="border-left:5px solid var(--blue);margin-top:6px">
+      <div style="background:linear-gradient(135deg,#1e3a5f,#1e40af);color:white;padding:11px 16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+        <span style="font-weight:800;font-size:13px">🔵 Division Workspace — 20 Department Accounts (BCM Team)</span>
+        <span style="background:rgba(220,38,38,.3);border:1px solid rgba(220,38,38,.6);padding:3px 12px;border-radius:12px;font-size:11px">⚠️ Deactivate 21 ส.ค. 2569</span>
+      </div>
+
+      <div class="mix-section-hdr paid" style="background:#1e3a8a">💳 A · Direct Subscription (Paid)</div>
+      <div class="mix-row">
+        <div class="mix-tool-name">💬 ChatGPT Team / Business<span class="mix-tool-sub">OpenAI · GPT-4o, DALL·E, Code Interpreter</span></div>
+        <div style="text-align:center"><input class="mix-seats-input" type="number" id="d_gpt" value="20" min="0" oninput="calcMix()"></div>
+        <div class="mix-cost-mo" id="d_pu_gpt">$25 · ฿838/เดือน</div>
+        <div class="mix-cost-mo" id="d_mo_gpt">฿16,750</div>
+        <div class="mix-cost-yr" id="d_yr_gpt" style="color:var(--red)">฿201,000</div>
+      </div>
+      <div class="mix-row">
+        <div class="mix-tool-name">🌟 Gemini Advanced<span class="mix-tool-sub">Google · Gemini + NotebookLM + Workspace AI</span></div>
+        <div style="text-align:center"><input class="mix-seats-input" type="number" id="d_gem" value="0" min="0" oninput="calcMix()"></div>
+        <div class="mix-cost-mo" id="d_pu_gem">$20 · ฿670/เดือน</div>
+        <div class="mix-cost-mo" id="d_mo_gem">฿0</div>
+        <div class="mix-cost-yr" id="d_yr_gem" style="color:var(--gem)">฿0</div>
+      </div>
+      <div class="mix-row mix-row-last">
+        <div class="mix-tool-name">🟠 Claude Pro / Teams<span class="mix-tool-sub">Anthropic · Claude Sonnet/Opus, Large context</span></div>
+        <div style="text-align:center"><input class="mix-seats-input" type="number" id="d_cla" value="0" min="0" oninput="calcMix()"></div>
+        <div class="mix-cost-mo" id="d_pu_cla">$20 · ฿670/เดือน</div>
+        <div class="mix-cost-mo" id="d_mo_cla">฿0</div>
+        <div class="mix-cost-yr" id="d_yr_cla" style="color:var(--cla)">฿0</div>
+      </div>
+
+      <div class="mix-section-hdr free">🆓 B · Free Tiers</div>
+      <div class="mix-row">
+        <div class="mix-tool-name">💬 ChatGPT Free<span class="mix-tool-sub">GPT-4o Mini · ~20 msgs/day · ไม่มี Team Admin</span></div>
+        <div style="text-align:center"><input class="mix-seats-input" type="number" id="d_gpt_f" value="0" min="0" oninput="calcMix()"></div>
+        <div class="mix-cost-mo"><span class="mix-free-note">FREE</span></div>
+        <div class="mix-cost-mo">฿0</div><div class="mix-cost-yr">฿0</div>
+      </div>
+      <div class="mix-row">
+        <div class="mix-tool-name">🌟 Gemini Free<span class="mix-tool-sub">Gemini Flash · Limited</span></div>
+        <div style="text-align:center"><input class="mix-seats-input" type="number" id="d_gem_f" value="0" min="0" oninput="calcMix()"></div>
+        <div class="mix-cost-mo"><span class="mix-free-note">FREE</span></div>
+        <div class="mix-cost-mo">฿0</div><div class="mix-cost-yr">฿0</div>
+      </div>
+      <div class="mix-row mix-row-last">
+        <div class="mix-tool-name">🟠 Claude Free<span class="mix-tool-sub">Claude Haiku · ~5 msgs/day</span></div>
+        <div style="text-align:center"><input class="mix-seats-input" type="number" id="d_cla_f" value="0" min="0" oninput="calcMix()"></div>
+        <div class="mix-cost-mo"><span class="mix-free-note">FREE</span></div>
+        <div class="mix-cost-mo">฿0</div><div class="mix-cost-yr">฿0</div>
+      </div>
+
+      <div class="mix-section-hdr api">🔀 C · OpenRouter (API Pay-per-Token)</div>
+      <div class="mix-row mix-row-last">
+        <div>
+          <div class="mix-tool-name">🔀 OpenRouter API<span class="mix-tool-sub">300+ models · API + 5.5% fee</span></div>
+          <div style="margin-top:6px;display:flex;gap:10px;flex-wrap:wrap">
+            <label style="font-size:11px;color:var(--g600)">Messages/ปี: <input class="mix-seats-input" type="number" id="d_or_msgs" value="0" min="0" style="width:90px" oninput="calcMix()"></label>
+            <label style="font-size:11px;color:var(--g600)">Model:
+              <select id="d_or_model" onchange="calcMix()" style="border:1.5px solid var(--g300);border-radius:6px;padding:5px 8px;font-size:12px;background:var(--g50)">
+                <option value="gpt4o">GPT-4o ($2.50/$10/M)</option>
+                <option value="gpt4mini">GPT-4o Mini ($0.15/$0.60/M)</option>
+                <option value="gemini">Gemini Flash ($0.075/$0.30/M)</option>
+                <option value="claude">Claude Sonnet ($3/$15/M)</option>
+                <option value="deepseek">DeepSeek R1 ($0.01/$0.03/M)</option>
+              </select></label>
+          </div>
+        </div>
+        <div></div>
+        <div class="mix-cost-mo" id="d_or_rate">$2.50/$10/M</div>
+        <div class="mix-cost-mo" id="d_mo_or">฿0</div>
+        <div class="mix-cost-yr" id="d_yr_or" style="color:var(--orange)">฿0</div>
+      </div>
+
+      <div class="mix-section-hdr thai">🇹🇭 D · True AI Hub</div>
+      <div class="mix-row mix-row-last">
+        <div class="mix-tool-name">🇹🇭 True AI Hub<span class="mix-tool-sub">50+ AI Models รวม Gemini · Thai Language · TrueBusiness</span></div>
+        <div style="text-align:center"><input class="mix-seats-input" type="number" id="d_thai" value="0" min="0" oninput="calcMix()"></div>
+        <div class="mix-cost-mo">฿399/user/mo</div>
+        <div class="mix-cost-mo" id="d_mo_thai">฿0</div>
+        <div class="mix-cost-yr" id="d_yr_thai" style="color:var(--pink)">฿0</div>
+      </div>
+
+      <!-- Division Subtotal -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;padding:14px 20px;background:#eff6ff;border-top:2px solid var(--blue)">
+        <div class="mix-sum-box" style="border-color:var(--blue)">
+          <div class="mix-sum-label">🔵 Division Seats (Paid)</div>
+          <div class="mix-sum-val" id="d_sum_seats">20</div>
+          <div class="mix-sum-sub" id="d_sum_seats_s">20 paid + 0 free</div>
+        </div>
+        <div class="mix-sum-box" style="background:var(--blue-l);border-color:var(--blue)">
+          <div class="mix-sum-label">💰 Division / เดือน</div>
+          <div class="mix-sum-val" id="d_sum_mo">฿16,750</div>
+        </div>
+        <div class="mix-sum-box" style="background:var(--blue-l);border-color:var(--blue)">
+          <div class="mix-sum-label">📅 Division / ปี</div>
+          <div class="mix-sum-val" id="d_sum_yr">฿201,000</div>
+        </div>
+      </div>
+    </div><!-- end div panel -->
+
+    <!-- ══════════════════ GRAND TOTAL ══════════════════ -->
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;padding:16px 20px;background:var(--g800);border-top:3px solid var(--g900)">
+      <div style="background:rgba(255,255,255,.07);border-radius:8px;padding:12px 14px;text-align:center;border:1px solid rgba(255,255,255,.1)">
+        <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">🟢 Executive/ปี</div>
+        <div style="font-size:18px;font-weight:900;color:#34d399;font-family:monospace" id="grand_exec_yr">฿472,350</div>
+      </div>
+      <div style="background:rgba(255,255,255,.07);border-radius:8px;padding:12px 14px;text-align:center;border:1px solid rgba(255,255,255,.1)">
+        <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">🔵 Division/ปี</div>
+        <div style="font-size:18px;font-weight:900;color:#60a5fa;font-family:monospace" id="grand_div_yr">฿201,000</div>
+      </div>
+      <div style="background:rgba(255,255,255,.07);border-radius:8px;padding:12px 14px;text-align:center;border:1px solid rgba(255,255,255,.1)">
+        <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">💰 รวม/เดือน</div>
+        <div style="font-size:18px;font-weight:900;color:white;font-family:monospace" id="grand_mo">฿56,113</div>
+      </div>
+      <div style="background:rgba(16,163,127,.2);border-radius:8px;padding:12px 14px;text-align:center;border:1.5px solid #10a37f">
+        <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">📅 รวมทั้งหมด/ปี</div>
+        <div style="font-size:22px;font-weight:900;color:white;font-family:monospace" id="grand_yr">฿673,350</div>
+        <div style="font-size:10px;color:rgba(255,255,255,.5);margin-top:3px">vs ฿673,750 ปัจจุบัน</div>
+      </div>
+      <div style="background:rgba(255,255,255,.07);border-radius:8px;padding:12px 14px;text-align:center;border:1px solid rgba(255,255,255,.1)">
+        <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">💚 ประหยัด/ปี</div>
+        <div style="font-size:18px;font-weight:900;font-family:monospace" id="grand_save" style="color:#34d399">฿400</div>
+        <div style="font-size:10px;color:rgba(255,255,255,.5);margin-top:3px" id="grand_save_pct">0.1% savings</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scenario Reference Table -->
+  <div class="card">
+    <h3>📋 Scenario Reference — แนวทางที่แนะนำ (67 users รวม)</h3>
+    <div class="tbl-wrap"><table>
+      <thead><tr>
+        <th>Scenario</th><th>รายละเอียด</th>
+        <th class="num">GPT</th><th class="num">Gemini</th><th class="num">Claude</th><th class="num">True Hub</th>
+        <th class="num">ค่าใช้จ่าย/ปี</th>
+        <th class="num">ประหยัด</th>
+        <th>ตอบโจทย์</th>
+        <th>คำแนะนำ</th>
+      </tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>A · ปัจจุบัน</strong></td>
+          <td>ChatGPT Team ทั้ง 2 Workspace</td>
+          <td class="num">67</td><td class="num">0</td><td class="num">0</td><td class="num">0</td>
+          <td class="num" style="color:var(--red)">฿673,750</td>
+          <td class="num">–</td>
+          <td><span class="badge br">ต่ำ (13%)</span></td>
+          <td><span class="badge by">ไม่แนะนำ</span></td>
+        </tr>
+        <tr>
+          <td><strong>B · Exec Only</strong></td>
+          <td>ChatGPT Team 40 active Exec เท่านั้น</td>
+          <td class="num">40</td><td class="num">0</td><td class="num">0</td><td class="num">0</td>
+          <td class="num">฿402,000</td>
+          <td class="num" style="color:var(--gpt)">฿271,750</td>
+          <td><span class="badge bk">Exec only</span></td>
+          <td><span class="badge bk">Minimum</span></td>
+        </tr>
+        <tr style="background:#eff6ff">
+          <td><strong>C · Hybrid</strong></td>
+          <td>GPT 40 Exec + True Hub 20 Div + Gemini 10</td>
+          <td class="num">40</td><td class="num">10</td><td class="num">0</td><td class="num">20</td>
+          <td class="num" style="color:var(--blue)">฿500,280</td>
+          <td class="num" style="color:var(--gpt)">฿173,470</td>
+          <td><span class="badge bb">ปานกลาง</span></td>
+          <td><span class="badge bb">ระยะสั้น</span></td>
+        </tr>
+        <tr style="background:#f0fdf4">
+          <td><strong>D · True Hub All</strong></td>
+          <td>True AI Hub ทั้งองค์กร (67 seats)</td>
+          <td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">67</td>
+          <td class="num" style="color:var(--gpt-d);font-weight:700">฿320,796</td>
+          <td class="num" style="color:var(--gpt);font-weight:700">฿352,954</td>
+          <td><span class="badge bg">สูง (87%)</span></td>
+          <td><span class="badge bg">✅ แนะนำ</span></td>
+        </tr>
+        <tr style="background:#fff7ed">
+          <td><strong>E · GPT+Gemini Mix</strong></td>
+          <td>GPT 20 power users + Gemini 47 standard</td>
+          <td class="num">20</td><td class="num">47</td><td class="num">0</td><td class="num">0</td>
+          <td class="num" style="color:var(--orange)">฿580,620</td>
+          <td class="num" style="color:var(--gpt)">฿93,130</td>
+          <td><span class="badge bg">สูงมาก (87%+)</span></td>
+          <td><span class="badge bo">ระยะกลาง</span></td>
+        </tr>
+        <tr>
+          <td><strong>F · OpenRouter</strong></td>
+          <td>API Gateway · DeepSeek + GPT-4o สำหรับ heavy users</td>
+          <td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td>
+          <td class="num" style="color:var(--orange)">฿8K–22K*</td>
+          <td class="num" style="color:var(--gpt)">฿651K+</td>
+          <td><span class="badge bg">สูง (Multi)</span></td>
+          <td><span class="badge br">Dev only</span></td>
+        </tr>
+      </tbody>
+    </table></div>
+    <p style="font-size:10.5px;color:var(--g500);margin-top:8px">* OpenRouter ประมาณจาก 76,634 msgs/ปี × avg 900 tokens + 5.5% platform fee | FX: ฿33.5/USD</p>
+  </div>
+
+  <!-- Cost Comparison Chart -->
+  <div class="grid2">
+    <div class="card">
+      <h3>💰 เปรียบเทียบค่าใช้จ่าย 6 Scenarios (THB/ปี)</h3>
+      <div class="chart-ht"><canvas id="c_scenarios"></canvas></div>
+    </div>
+    <div class="card">
+      <h3>📉 ราคาต่อ User ต่อปี (THB) เปรียบเทียบ</h3>
+      <div class="chart-ht"><canvas id="c_per_user"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Final Recommendation -->
+  <div class="verdict">
+    <h3>✅ กลยุทธ์ 3 ระยะ สำหรับ BCM (อิงจาก Survey + Usage Data)</h3>
+    <div class="verdict-grid">
+      <div class="vi">
+        <div class="vi-icon">🥇</div>
+        <div class="vi-title">ระยะสั้น (ก่อน 21 ส.ค. 2569)</div>
+        <div class="vi-body">ต่ออายุ <strong>ChatGPT Team เฉพาะ Executive 40 seats</strong> (active only ประหยัด 7 seats) + ขอ Proposal True AI Hub สำหรับ Division ทดแทน · Budget: ~฿402K/ปี</div>
+      </div>
+      <div class="vi">
+        <div class="vi-icon">🥈</div>
+        <div class="vi-title">ระยะกลาง (Q3–Q4 2569)</div>
+        <div class="vi-body">Pilot <strong>True AI Hub 20 Division</strong> + เพิ่ม <strong>Gemini Advanced 10-15 seats</strong> สำหรับ Division ที่ต้องการ Gemini สูง (Rehab 97%, IPUs Surgery 90%) · Budget: ~฿450–500K/ปี</div>
+      </div>
+      <div class="vi">
+        <div class="vi-icon">🥉</div>
+        <div class="vi-title">ระยะยาว (2570)</div>
+        <div class="vi-body">Migrate ทั้งองค์กร → <strong>True AI Hub หรือ Gemini + Claude Mix</strong> ตามผล Pilot · ประหยัด ฿352K/ปี เทียบกับ ChatGPT ปัจจุบัน · นำงบไปจัด AI Training</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end sec2 -->
+
+<div style="text-align:center;color:var(--g500);font-size:11px;padding:16px;background:var(--g100)">
+  BCM ChatGPT Dashboard v3 · ข้อมูล MAY 2025–MAY 2026 · สร้างวันที่ 10 มิถุนายน 2569 · โรงพยาบาลกรุงเทพเชียงใหม่
+</div>
+
+<script>
+// ── NAVIGATION ──
+function switchSection(n){
+  document.querySelectorAll('.section').forEach((s,i)=>s.classList.toggle('active',i===n));
+  document.querySelectorAll('.nav-btn').forEach((b,i)=>b.classList.toggle('active',i===n));
+}
+function showTab(group,period,btn){
+  document.querySelectorAll('[id^="'+group+'-"]').forEach(p=>p.classList.remove('active'));
+  document.getElementById(group+'-'+period).classList.add('active');
+  btn.closest('.card').querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// ── SECTION 1: WORKSPACE FILTER ──
+let execCharts={}, divCharts={}, allCharts={};
+function filterWS(mode, btn){
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('panel-all').classList.toggle('visible', mode==='all');
+  document.getElementById('panel-exec').classList.toggle('visible', mode==='exec');
+  document.getElementById('panel-div').classList.toggle('visible', mode==='div');
+  // Lazy-init charts on first show
+  if(mode==='exec' && !execCharts.init) initExecCharts();
+  if(mode==='div' && !divCharts.init) initDivCharts();
+}
+
+// ── SECTION 2: EFFICIENCY DATA ──
+const DIV_EFF_DATA = [
+  {acct:'BCM HDO',survey:'Hospital Director Office',eff:23.76,n:4,msg1m:35,gemPct:25,note:'HDO eff สูงสุด'},
+  {acct:'BCM HR',survey:'Human Resources',eff:23.2,n:5,msg1m:146,gemPct:80,note:'Gemini + Claude ต้องการสูง'},
+  {acct:'BCM MAO',survey:'Medical Affair Office',eff:23.0,n:2,msg1m:140,gemPct:100,note:'MAO ต้องการ Gemini 100%'},
+  {acct:'Inter (Marketing)',survey:'Marketing',eff:22.5,n:5,msg1m:88,gemPct:100,note:'Gemini+Claude 100%'},
+  {acct:'BCM TQCI',survey:'TQCI',eff:21.83,n:6,msg1m:94,gemPct:100,note:'ต้องการ Gemini 100%'},
+  {acct:'A&F',survey:'Accounting and Finance',eff:21.12,n:43,msg1m:163,gemPct:77,note:''},
+  {acct:'Imaging Admin',survey:'Imaging',eff:20.76,n:21,msg1m:222,gemPct:86,note:'Usage สูง + Gemini ต้องการ'},
+  {acct:'BCM Medicine',survey:'IPUs Medicine',eff:20.71,n:58,msg1m:221,gemPct:90,note:'Gemini ต้องการ 90%'},
+  {acct:'BCM NPT',survey:'Nurse Support Services',eff:20.41,n:52,msg1m:300,gemPct:89,note:'Claude ต้องการ 33%'},
+  {acct:'IPU Ped',survey:'IPUs PED & OBGYN',eff:20.32,n:166,msg1m:122,gemPct:87,note:'ผู้ตอบมากที่สุด'},
+  {acct:'Trauma',survey:'CoE Heart & CoE Trauma',eff:20.04,n:73,msg1m:329,gemPct:89,note:'Usage สูง + Gemini ต้องการ'},
+  {acct:'CoE Neuro & Cancer',survey:'CoE Cancer & CoE Neuroscience',eff:19.97,n:42,msg1m:188,gemPct:81,note:'Gamma ต้องการ 31%'},
+  {acct:'BCM GSD',survey:'General Support Services',eff:19.66,n:45,msg1m:54,gemPct:82,note:''},
+  {acct:'BCM Rehab',survey:'Rehabilitation',eff:19.83,n:29,msg1m:326,gemPct:97,note:'Gemini 97% + Claude 38%'},
+  {acct:'surgery',survey:'IPUs Surgery & Ortho',eff:19.37,n:52,msg1m:0,gemPct:90,note:'ต้องการ Gemini แต่ไม่ใช้ ChatGPT'},
+  {acct:'BCM Pharmacy',survey:'Pharmacy',eff:18.59,n:41,msg1m:145,gemPct:78,note:''},
+  {acct:'BCM CONTRACT',survey:'Contract and Legal',eff:18.33,n:3,msg1m:0,gemPct:100,note:'ต้องการ Gemini 100% · ไม่ใช้ ChatGPT (1M)'},
+  {acct:'URNurse',survey:'Utilization Management',eff:18.3,n:10,msg1m:102,gemPct:90,note:''},
+  {acct:'BCMSHE',survey:'Facility Management Service',eff:15.0,n:2,msg1m:348,gemPct:50,note:'Usage สูงสุด แต่ Eff ต่ำสุด → ต้องการ Training'},
+];
+
+function effTier(e){
+  if(e>=24)return{cls:'bg',lbl:'TIER 1A ★★★',color:'#16a34a'};
+  if(e>=22)return{cls:'bb',lbl:'TIER 1B ★★',color:'#2563eb'};
+  if(e>=20)return{cls:'bb',lbl:'TIER 2 ★',color:'#2563eb'};
+  if(e>=18)return{cls:'by',lbl:'TIER 3',color:'#d97706'};
+  return{cls:'br',lbl:'TIER 4',color:'#dc2626'};
+}
+
+function buildEffTable(){
+  const tbody = document.getElementById('eff-tbody');
+  const sorted = [...DIV_EFF_DATA].sort((a,b)=>b.eff-a.eff);
+  tbody.innerHTML = sorted.map((d,i)=>{
+    const t=effTier(d.eff), pct=Math.round(d.eff/25*100);
+    const barW=Math.round(d.msg1m/348*90);
+    const usageBadge = d.msg1m===0?'<span class="badge br">0 msgs</span>':
+      d.msg1m>=300?`<span class="badge bg">${d.msg1m.toLocaleString()}</span>`:
+      d.msg1m>=150?`<span class="badge bb">${d.msg1m.toLocaleString()}</span>`:
+      `<span class="badge bk">${d.msg1m.toLocaleString()}</span>`;
+    return `<tr>
+      <td><strong>${d.acct}</strong></td>
+      <td style="font-size:11px;color:var(--g600)">${d.survey}</td>
+      <td class="num">${d.n}</td>
+      <td>
+        <div class="eff-bar">
+          <span class="eff-track"><span class="eff-fill ${t.cls==='br'?'eff-t4':t.cls==='by'?'eff-t3':t.cls==='bb'?'eff-t2':'eff-t1'}" style="width:${pct}%"></span></span>
+          <strong style="color:${t.color};font-size:12px">${d.eff.toFixed(1)}/25</strong>
+        </div>
+      </td>
+      <td><strong style="color:${t.color}">${pct}%</strong></td>
+      <td><span class="badge ${t.cls}" style="font-size:10px">${t.lbl}</span></td>
+      <td>${usageBadge}</td>
+      <td><span style="color:${d.gemPct>=86?'#1d4ed8':'var(--g600)'}"><strong>${d.gemPct}%</strong></span></td>
+      <td style="font-size:11px;color:var(--g500)">${d.note}</td>
+    </tr>`;
+  }).join('');
+}
+buildEffTable();
+
+// ── SPLIT MIX CALCULATOR ──
+const PRICES = {
+  gpt_usd:25, gem_usd:20, cla_usd:20, thai_thb:399,
+  or_models:{gpt4o:[2.5,10],gpt4mini:[0.15,0.60],gemini:[0.075,0.30],claude:[3,15],deepseek:[0.01,0.03]},
+  or_labels:{gpt4o:'$2.50/$10/M',gpt4mini:'$0.15/$0.60/M',gemini:'$0.075/$0.30/M',claude:'$3/$15/M',deepseek:'$0.01/$0.03/M'}
+};
+const BASE_COST = 673750;
+function fmt(n){return '฿'+(Math.round(n)).toLocaleString();}
+function setEl(id,v){const el=document.getElementById(id);if(el)el.textContent=v;}
+
+function calcWorkspace(p){
+  const fx = parseFloat(document.getElementById('fxRate').value)||33.5;
+  const sGpt=parseInt(document.getElementById(p+'_gpt').value)||0;
+  const sGem=parseInt(document.getElementById(p+'_gem').value)||0;
+  const sCla=parseInt(document.getElementById(p+'_cla').value)||0;
+  const sGptF=parseInt(document.getElementById(p+'_gpt_f').value)||0;
+  const sGemF=parseInt(document.getElementById(p+'_gem_f').value)||0;
+  const sClaF=parseInt(document.getElementById(p+'_cla_f').value)||0;
+  const orMsgs=parseInt(document.getElementById(p+'_or_msgs').value)||0;
+  const orModel=document.getElementById(p+'_or_model').value;
+  const sThai=parseInt(document.getElementById(p+'_thai').value)||0;
+
+  const puGpt=PRICES.gpt_usd*fx, puGem=PRICES.gem_usd*fx, puCla=PRICES.cla_usd*fx;
+  const moGpt=sGpt*puGpt, moGem=sGem*puGem, moCla=sCla*puCla, moThai=sThai*PRICES.thai_thb;
+  const [inR,outR]=PRICES.or_models[orModel];
+  const orAnnual=((orMsgs*450/1e6)*inR*fx+(orMsgs*450/1e6)*outR*fx)*1.055;
+  const orMo=orAnnual/12;
+  const totalPaid=sGpt+sGem+sCla+sThai, totalFree=sGptF+sGemF+sClaF;
+  const totalMo=moGpt+moGem+moCla+orMo+moThai, totalYr=totalMo*12;
+
+  setEl(p+'_pu_gpt','$25 · '+fmt(puGpt)+'/เดือน');
+  setEl(p+'_pu_gem','$20 · '+fmt(puGem)+'/เดือน');
+  setEl(p+'_pu_cla','$20 · '+fmt(puCla)+'/เดือน');
+  setEl(p+'_mo_gpt',fmt(moGpt)); setEl(p+'_yr_gpt',fmt(moGpt*12));
+  setEl(p+'_mo_gem',fmt(moGem)); setEl(p+'_yr_gem',fmt(moGem*12));
+  setEl(p+'_mo_cla',fmt(moCla)); setEl(p+'_yr_cla',fmt(moCla*12));
+  setEl(p+'_mo_or',fmt(orMo));   setEl(p+'_yr_or',fmt(orAnnual));
+  setEl(p+'_mo_thai',fmt(moThai));setEl(p+'_yr_thai',fmt(moThai*12));
+  setEl(p+'_or_rate',PRICES.or_labels[orModel]);
+  setEl(p+'_sum_seats',String(totalPaid));
+  setEl(p+'_sum_seats_s',totalPaid+' paid + '+totalFree+' free');
+  setEl(p+'_sum_mo',fmt(totalMo));
+  setEl(p+'_sum_yr',fmt(totalYr));
+  return totalYr;
+}
+
+function calcMix(){
+  const execYr = calcWorkspace('e');
+  const divYr  = calcWorkspace('d');
+  const grandYr = execYr + divYr;
+  const grandMo = grandYr / 12;
+  const saving = BASE_COST - grandYr;
+  const savPct = ((saving/BASE_COST)*100).toFixed(1);
+  setEl('grand_exec_yr', fmt(execYr));
+  setEl('grand_div_yr',  fmt(divYr));
+  setEl('grand_mo',      fmt(grandMo));
+  setEl('grand_yr',      fmt(grandYr));
+  setEl('grand_save',    saving>=0 ? fmt(saving) : '-'+fmt(-saving));
+  setEl('grand_save_pct',saving>=0 ? savPct+'% savings' : Math.abs(savPct)+'% more expensive');
+  const saveEl=document.getElementById('grand_save');
+  if(saveEl) saveEl.style.color = saving>=0?'#34d399':'#f87171';
+}
+calcMix();
+
+// ── CHARTS ──
+const C = {
+  gpt:'rgba(16,163,127,0.85)', gpt2:'rgba(16,163,127,0.35)',
+  blue:'rgba(30,64,175,0.85)', blue2:'rgba(30,64,175,0.35)',
+  gem:'rgba(66,133,244,0.85)', gem2:'rgba(66,133,244,0.35)',
+  cla:'rgba(217,119,6,0.85)',
+  orange:'rgba(234,88,12,0.85)',
+  red:'rgba(220,38,38,0.85)',
+  pink:'rgba(225,29,72,0.85)',
+  yellow:'rgba(217,119,6,0.8)',
+  purple:'rgba(124,58,237,0.8)',
+};
+const cf = {responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:10},boxWidth:12}}}};
+
+// Section 1 - Combined charts (always init)
+new Chart(document.getElementById('c_combined'),{
+  type:'bar',
+  data:{labels:['1 เดือน','6 เดือน','12 เดือน'],
+    datasets:[
+      {label:'Executive',data:[3822,22316,50291],backgroundColor:C.gpt,borderRadius:3},
+      {label:'Division',data:[3058,14476,26343],backgroundColor:C.blue,borderRadius:3}
+    ]},
+  options:{...cf,scales:{x:{stacked:true},y:{stacked:true,beginAtZero:true,ticks:{callback:v=>v>=1000?(v/1000)+'K':v}}}}
+});
+new Chart(document.getElementById('c_util_all'),{
+  type:'bar',
+  data:{labels:['1M','6M','12M'],
+    datasets:[
+      {label:'Exec Active',data:[27,32,40],backgroundColor:C.gpt},
+      {label:'Exec Inactive',data:[20,15,7],backgroundColor:C.gpt2},
+      {label:'Div Active',data:[17,20,20],backgroundColor:C.blue},
+      {label:'Div Inactive',data:[3,0,0],backgroundColor:C.blue2}
+    ]},
+  options:{...cf,scales:{x:{stacked:true},y:{stacked:true,beginAtZero:true,max:70}}}
+});
+
+function initExecCharts(){
+  execCharts.init=true;
+  new Chart(document.getElementById('c_exec_msgs'),{
+    type:'bar',
+    data:{labels:['1M','6M','12M'],
+      datasets:[{label:'Executive Messages',data:[3822,22316,50291],backgroundColor:[C.gpt,C.blue,C.orange],borderRadius:4}]},
+    options:{...cf,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{callback:v=>v>=1000?(v/1000)+'K':v}}}}
+  });
+  new Chart(document.getElementById('c_exec_active'),{
+    type:'doughnut',
+    data:{labels:['Active (1M)','Inactive (1M)','New by 6M','New by 12M'],
+      datasets:[{data:[27,13,5,8],backgroundColor:[C.gpt,C.gpt2,C.blue,C.orange]}]},
+    options:{...cf,plugins:{legend:{position:'bottom',labels:{font:{size:10}}}}}
+  });
+  new Chart(document.getElementById('c_exec_top'),{
+    type:'bar',
+    data:{
+      labels:['TAWAT','Busaban','Poya','Atikun','Kanitkanit','Pipat'],
+      datasets:[{label:'12M msgs',data:[8610,5990,4600,4190,3070,2940],backgroundColor:C.gpt,borderRadius:3}]
+    },
+    options:{...cf,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,ticks:{callback:v=>v>=1000?(v/1000)+'K':v}}}}
+  });
+  new Chart(document.getElementById('c_exec_trend'),{
+    type:'line',
+    data:{labels:['Jun25','Jul','Aug','Sep','Oct','Nov','Dec','Jan26','Feb','Mar','Apr','May26'],
+      datasets:[{label:'Exec Msgs/Month (est.)',
+        data:[3200,3800,4100,4300,3900,4200,4500,4100,3800,4200,4300,3822],
+        borderColor:C.gpt,backgroundColor:C.gpt2,fill:true,tension:0.4,pointRadius:3}]},
+    options:{...cf,scales:{y:{beginAtZero:false,ticks:{callback:v=>v>=1000?(v/1000)+'K':v}}}}
+  });
+  new Chart(document.getElementById('c_exec_dist'),{
+    type:'bar',
+    data:{labels:['High\n(>500)','Medium\n(100-500)','Low\n(1-99)','Inactive\n(0)'],
+      datasets:[
+        {label:'1M',data:[4,5,18,20],backgroundColor:C.gpt},
+        {label:'6M',data:[5,9,18,15],backgroundColor:C.blue},
+        {label:'12M',data:[6,14,20,7],backgroundColor:C.orange}
+      ]},
+    options:{...cf,scales:{y:{beginAtZero:true,title:{display:true,text:'จำนวน Users'}}}}
+  });
+}
+
+function initDivCharts(){
+  divCharts.init=true;
+  new Chart(document.getElementById('c_div_msgs'),{
+    type:'bar',
+    data:{labels:['1M','6M','12M'],
+      datasets:[{label:'Division Messages',data:[3058,14476,26343],backgroundColor:[C.blue,C.gem,C.orange],borderRadius:4}]},
+    options:{...cf,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{callback:v=>v>=1000?(v/1000)+'K':v}}}}
+  });
+  new Chart(document.getElementById('c_div_active'),{
+    type:'doughnut',
+    data:{labels:['Active (1M)','Inactive (1M)','All Active (6M+)'],
+      datasets:[{data:[17,3,20],backgroundColor:[C.blue,C.blue2,C.gpt]}]},
+    options:{...cf,plugins:{legend:{position:'bottom',labels:{font:{size:10}}}}}
+  });
+  new Chart(document.getElementById('c_div_top'),{
+    type:'bar',
+    data:{
+      labels:['Trauma','BCM NPT','BCMSHE','Rehab','Imaging','Medicine','Pharmacy','CoE Neuro'],
+      datasets:[{label:'12M msgs',data:[2870,2430,2350,2150,2060,1910,1870,1640],backgroundColor:C.blue,borderRadius:3}]
+    },
+    options:{...cf,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,ticks:{callback:v=>v>=1000?(v/1000)+'K':v}}}}
+  });
+  new Chart(document.getElementById('c_div_trend'),{
+    type:'line',
+    data:{labels:['Jun25','Jul','Aug','Sep','Oct','Nov','Dec','Jan26','Feb','Mar','Apr','May26'],
+      datasets:[{label:'Division Msgs/Month (est.)',
+        data:[1800,2000,2200,2100,2300,2400,2600,2300,2200,2400,2500,3058],
+        borderColor:C.blue,backgroundColor:C.blue2,fill:true,tension:0.4,pointRadius:3}]},
+    options:{...cf,scales:{y:{beginAtZero:false,ticks:{callback:v=>v>=1000?(v/1000)+'K':v}}}}
+  });
+  new Chart(document.getElementById('c_div_compare'),{
+    type:'bar',
+    data:{
+      labels:['Trauma','BCMSHE','Rehab','NPT','Imaging','Medicine','CoE Neuro','A&F','Pharmacy'],
+      datasets:[
+        {label:'1M msgs',data:[329,348,326,300,222,221,188,163,145],backgroundColor:C.blue},
+        {label:'12M avg/mo',data:[239,196,179,203,172,159,137,99,156],backgroundColor:C.gem}
+      ]
+    },
+    options:{...cf,scales:{y:{beginAtZero:true}}}
+  });
+}
+
+// Section 2 Charts
+new Chart(document.getElementById('c_eff_overview'),{
+  type:'radar',
+  data:{
+    labels:['คุณภาพงาน','ความสะดวก','ความมั่นใจ','นวัตกรรม','โดยรวม'],
+    datasets:[
+      {label:'BCM Avg (20.3/25)',data:[4.1,4.2,3.8,4.1,4.1],borderColor:C.gpt,backgroundColor:C.gpt2,pointBackgroundColor:C.gpt},
+      {label:'Top Dept (HDO 23.76)',data:[4.7,5.0,4.8,4.8,4.5],borderColor:C.blue,backgroundColor:C.blue2,pointBackgroundColor:C.blue},
+      {label:'Need Improvement (BCMSHE 15)',data:[3.0,3.0,3.0,3.0,3.0],borderColor:C.red,backgroundColor:'rgba(220,38,38,.15)',pointBackgroundColor:C.red}
+    ]
+  },
+  options:{...cf,scales:{r:{min:0,max:5,ticks:{stepSize:1,font:{size:9}},pointLabels:{font:{size:10}}}}}
+});
+
+const effSorted = [...DIV_EFF_DATA].sort((a,b)=>b.eff-a.eff);
+new Chart(document.getElementById('c_eff_rank'),{
+  type:'bar',
+  data:{
+    labels: effSorted.map(d=>d.acct.replace('BCM ','').replace(' (Marketing)','')),
+    datasets:[{
+      label:'Efficiency Score (/25)',
+      data: effSorted.map(d=>d.eff),
+      backgroundColor: effSorted.map(d=>d.eff>=24?C.gpt:d.eff>=22?C.blue:d.eff>=20?C.gem:d.eff>=18?C.yellow:C.red),
+      borderRadius:3
+    }]
+  },
+  options:{...cf,indexAxis:'y',plugins:{legend:{display:false}},
+    scales:{x:{beginAtZero:true,max:25,ticks:{callback:v=>v+'/25'}},
+      y:{ticks:{font:{size:9}}}}}
+});
+
+new Chart(document.getElementById('c_eff_scatter'),{
+  type:'scatter',
+  data:{
+    datasets:[{
+      label:'Division',
+      data: DIV_EFF_DATA.map(d=>({x:d.msg1m,y:d.eff,label:d.acct})),
+      backgroundColor: DIV_EFF_DATA.map(d=>d.eff>=22?C.gpt:d.eff>=20?C.blue:d.eff>=18?C.yellow:C.red),
+      pointRadius:7,pointHoverRadius:9
+    }]
+  },
+  options:{...cf,
+    plugins:{
+      legend:{display:false},
+      tooltip:{callbacks:{label:ctx=>{const d=DIV_EFF_DATA[ctx.dataIndex];return d.acct+': Eff '+d.eff.toFixed(1)+'/25, '+d.msg1m+' msgs';}}}
+    },
+    scales:{
+      x:{title:{display:true,text:'ChatGPT Usage (1M msgs)'},beginAtZero:true},
+      y:{title:{display:true,text:'Efficiency Score (/25)'},min:12,max:26}
+    }
+  }
+});
+
+// Section 3 Charts
+new Chart(document.getElementById('c_scenarios'),{
+  type:'bar',
+  data:{
+    labels:['A·ปัจจุบัน','B·Exec Only','C·Hybrid','D·TrueHub','E·GPT+Gem','F·OpenRouter'],
+    datasets:[{label:'ค่าใช้จ่าย/ปี (THB)',
+      data:[673750,402000,500280,320796,580620,15000],
+      backgroundColor:[C.red,C.yellow,C.blue,C.gpt,C.orange,C.purple],
+      borderRadius:5}]
+  },
+  options:{...cf,plugins:{legend:{display:false}},
+    scales:{y:{beginAtZero:true,ticks:{callback:v=>'฿'+(v/1000).toFixed(0)+'K'}}}}
+});
+new Chart(document.getElementById('c_per_user'),{
+  type:'bar',
+  data:{
+    labels:['ChatGPT\nTeam','Gemini\nAdvanced','Claude\nPro','True AI\nHub','OpenRouter\n(GPT-4o est)'],
+    datasets:[{label:'฿/user/ปี',
+      data:[10050,8040,8040,4788,224],
+      backgroundColor:[C.gpt,C.gem,C.cla,C.pink,C.orange],
+      borderRadius:5}]
+  },
+  options:{...cf,plugins:{legend:{display:false}},
+    scales:{y:{beginAtZero:true,ticks:{callback:v=>'฿'+v.toLocaleString()}}}}
+});
+
+</script>
+</body>
+</html>
